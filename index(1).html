@@ -1,0 +1,3355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#123D30">
+<meta name="color-scheme" content="light">
+<meta name="description" content="青禾校园宿舍水电自助服务：绑定寝室水电户号、查询余额账单、低余额提醒、在线充值。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23123D30'/%3E%3Cpath d='M8.5 25V13.7L16 7.2l7.5 6.5V25' fill='none' stroke='%23EAF7F0' stroke-width='1.8' stroke-linejoin='round'/%3E%3Cpath d='M13.1 25v-4.4h5.8V25' fill='none' stroke='%23EAF7F0' stroke-width='1.6'/%3E%3Cpath d='M12.2 15.5h1M16 15.5h1M19.8 15.5h1M12.2 18.6h1M19.8 18.6h1' stroke='%238AD4B0' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>青禾校园 · 宿舍水电自助服务</title>
+<style>
+  :root{
+    --bg:#F4F6F2;
+    --surface:#FFFFFF;
+    --surface-soft:#F8FAF7;
+    --ink:#152A21;
+    --ink-2:#33473D;
+    --muted:#77857D;
+    --muted-2:#95A199;
+    --line:#E4EAE5;
+    --line-soft:#EEF2EE;
+    --brand:#146B53;
+    --brand-deep:#0D5340;
+    --brand-soft:#EAF5EF;
+    --brand-mint:#A9E3C7;
+    --amber:#B57A23;
+    --amber-soft:#FBF3E3;
+    --danger:#AF4D43;
+    --danger-soft:#FBEDEB;
+    --blue:#2E6DA8;
+    --blue-soft:#EBF2FA;
+    --shadow-card:0 1px 2px rgba(18,48,36,.025), 0 18px 40px -34px rgba(18,48,36,.28);
+    --shadow-modal:0 42px 110px -34px rgba(8,31,22,.55);
+    --radius-card:22px;
+    --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --font-mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    min-height:100vh;
+    color:var(--ink);
+    font-family:var(--font-sans);
+    font-size:14px;
+    line-height:1.5;
+    background:
+      radial-gradient(760px 480px at 8% -6%, rgba(27,120,88,.085), transparent 62%),
+      radial-gradient(640px 420px at 100% 2%, rgba(181,122,35,.045), transparent 58%),
+      linear-gradient(180deg,#F7F8F5 0%,var(--bg) 52%,#F1F4EF 100%);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  body.modal-open{overflow:hidden}
+  ::selection{background:#CBEBDD;color:#0B3D2F}
+  a{color:inherit;text-decoration:none}
+  button,input,select{font:inherit}
+  button{color:inherit}
+  button,[role="button"]{-webkit-tap-highlight-color:transparent}
+  img,svg{display:block}
+  :focus-visible{outline:2px solid #22745B;outline-offset:3px}
+  .sr-only{
+    position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+  .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  .nowrap{white-space:nowrap}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    background:rgba(246,248,244,.84);
+    border-bottom:1px solid rgba(21,58,43,.07);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    backdrop-filter:blur(18px) saturate(140%);
+  }
+  .topbar-inner{
+    max-width:1204px;margin:0 auto;padding:0 28px;height:74px;
+    display:flex;align-items:center;gap:34px;
+  }
+  .brand{display:flex;align-items:center;gap:11px;flex:none;border-radius:12px}
+  .brand-mark{
+    width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(145deg,#1B7459,#0B4E3A);
+    box-shadow:0 8px 18px -9px rgba(11,78,58,.7);
+    border:1px solid rgba(255,255,255,.12);
+  }
+  .brand-mark svg{width:25px;height:25px}
+  .brand-text{display:flex;flex-direction:column;line-height:1.1;font-size:15.5px;font-weight:650;letter-spacing:.1px}
+  .brand-text small{font-size:9.5px;letter-spacing:1.25px;color:var(--muted-2);font-weight:500;margin-top:5px}
+  .main-nav{display:flex;align-items:center;gap:2px;margin-left:4px}
+  .main-nav a{
+    padding:9px 13px;border-radius:9px;font-size:13px;color:#62736A;
+    transition:background .18s ease,color .18s ease;font-weight:500;
+  }
+  .main-nav a:hover{color:var(--ink);background:rgba(20,107,83,.055)}
+  .main-nav a.active{color:#174C3B;background:rgba(20,107,83,.08);font-weight:600}
+  .topbar-actions{margin-left:auto;display:flex;align-items:center;gap:9px}
+  .campus-pill{
+    display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 11px;
+    border-radius:999px;background:rgba(20,107,83,.07);color:#47705E;
+    font-size:10.5px;font-weight:550;white-space:nowrap;letter-spacing:.05px;
+  }
+  .campus-pill svg{width:13px;height:13px;color:#5C8975;flex:none}
+  @media (max-width:1080px){.campus-pill{display:none}}
+  .net-pill{
+    display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 11px;
+    border:1px solid rgba(21,58,43,.085);border-radius:999px;
+    background:rgba(255,255,255,.7);color:#64766C;font-size:11px;font-weight:500;
+    cursor:pointer;transition:background .18s ease,border-color .18s ease;
+  }
+  .net-pill:hover{background:#fff;border-color:rgba(21,58,43,.15)}
+  .net-dot{
+    width:6px;height:6px;border-radius:50%;background:#2F9B70;flex:none;
+    box-shadow:0 0 0 3px rgba(47,155,112,.09);
+  }
+  .net-pill.is-loading .net-dot{background:#B8842E;box-shadow:0 0 0 3px rgba(184,132,46,.1);animation:pulse 1.4s ease-in-out infinite}
+  .net-pill.is-error .net-dot{background:#B55248;box-shadow:0 0 0 3px rgba(181,82,72,.1)}
+  .icon-btn{
+    width:37px;height:37px;border:1px solid transparent;border-radius:10px;
+    background:transparent;color:#687A70;display:grid;place-items:center;cursor:pointer;
+    transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
+  }
+  .icon-btn:hover{background:#fff;border-color:var(--line);color:var(--ink)}
+  .icon-btn:active{transform:scale(.96)}
+  .icon-btn svg{width:18px;height:18px}
+  .avatar{
+    width:37px;height:37px;border-radius:50%;display:grid;place-items:center;
+    color:#175942;background:linear-gradient(145deg,#E7F2EC,#D5EADF);
+    border:1px solid rgba(19,92,72,.1);font-size:12.5px;font-weight:650;
+    user-select:none;
+  }
+
+  /* ---------- Layout ---------- */
+  .page{max-width:1204px;margin:0 auto;padding:30px 28px 58px;min-height:calc(100vh - 74px)}
+  .hero{
+    position:relative;isolation:isolate;overflow:hidden;
+    border-radius:30px;padding:40px 42px;min-height:306px;
+    display:grid;grid-template-columns:minmax(0,1fr) 356px;gap:42px;align-items:center;
+    color:#F7FCF9;
+    background:
+      radial-gradient(760px 470px at 104% -16%, rgba(106,196,158,.3), transparent 61%),
+      radial-gradient(520px 400px at -8% 120%, rgba(58,128,101,.3), transparent 58%),
+      linear-gradient(128deg,#173F31 0%,#113429 52%,#0D2A22 100%);
+    box-shadow:0 34px 64px -46px rgba(11,45,34,.85);
+  }
+  .hero::before{
+    content:"";position:absolute;z-index:-1;width:540px;height:540px;border-radius:50%;
+    right:-175px;top:-305px;border:1px solid rgba(218,244,231,.1);
+    box-shadow:0 0 0 82px rgba(218,244,231,.025), 0 0 0 165px rgba(218,244,231,.018);
+    pointer-events:none;
+  }
+  .hero::after{
+    content:"";position:absolute;z-index:-1;width:320px;height:320px;border-radius:50%;
+    left:-170px;bottom:-245px;border:1px solid rgba(218,244,231,.08);
+    box-shadow:0 0 0 58px rgba(218,244,231,.018);
+    pointer-events:none;
+  }
+  .hero-copy{position:relative;z-index:1;max-width:600px;min-width:0}
+  .eyebrow{
+    display:flex;align-items:center;gap:10px;margin-bottom:17px;
+    color:#B9DFCE;font-size:10px;font-weight:650;letter-spacing:2.2px;text-transform:uppercase;
+  }
+  .eyebrow::before{content:"";width:21px;height:1px;background:rgba(190,229,211,.72)}
+  .hero h1{
+    margin:0;font-size:clamp(34px,4vw,49px);line-height:1.18;font-weight:650;
+    letter-spacing:-1.5px;
+  }
+  .hero h1 em{font-style:normal;color:var(--brand-mint)}
+  .hero-desc{
+    max-width:460px;margin:16px 0 25px;color:rgba(230,244,237,.7);
+    font-size:13.5px;line-height:1.8;
+  }
+  .hero-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .hero-overview{
+    position:relative;z-index:1;align-self:stretch;min-height:224px;
+    padding:22px 23px 20px;border-radius:23px;
+    border:1px solid rgba(226,247,237,.13);
+    background:linear-gradient(145deg,rgba(255,255,255,.104),rgba(255,255,255,.045));
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 18px 44px -34px rgba(0,0,0,.8);
+    display:flex;flex-direction:column;
+  }
+  .overview-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .overview-head > span:first-child{font-size:11px;font-weight:600;color:rgba(237,249,242,.75);letter-spacing:.3px}
+  .live-badge{
+    display:inline-flex;align-items:center;gap:6px;font-size:9.5px;font-weight:500;
+    color:rgba(207,235,221,.7);padding:4px 7px;border:1px solid rgba(216,242,229,.13);border-radius:999px;
+  }
+  .live-badge i{width:4px;height:4px;border-radius:50%;background:#8AD4B0;animation:pulse 2.2s ease-in-out infinite}
+  .overview-label{display:block;margin-top:22px;font-size:11px;color:rgba(219,239,229,.58)}
+  .overview-balance{
+    display:flex;align-items:flex-start;gap:3px;margin-top:3px;
+    font-size:41px;font-weight:650;line-height:1.12;letter-spacing:-1.6px;
+    font-variant-numeric:tabular-nums;
+  }
+  .overview-balance .currency{font-size:19px;font-weight:500;margin-top:8px;color:rgba(240,251,245,.55);letter-spacing:0}
+  .overview-balance .cents{font-size:26px;letter-spacing:-.6px;color:rgba(239,250,244,.7);margin-top:5px}
+  .overview-caption{font-size:10.5px;color:rgba(221,241,231,.52);margin-top:7px}
+  .overview-stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+    margin-top:auto;padding-top:18px;border-top:1px solid rgba(224,246,234,.1);
+  }
+  .overview-stats > div{min-width:0}
+  .overview-stats > div + div{border-left:1px solid rgba(224,246,234,.1);padding-left:17px}
+  .overview-stats span{display:block;font-size:10px;color:rgba(221,241,231,.5);white-space:nowrap}
+  .overview-stats strong{
+    display:block;margin-top:5px;font-size:15.5px;font-weight:600;color:#F2FBF6;
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .overview-stats strong.warn{color:#F2CC83}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    height:42px;padding:0 17px;border:1px solid transparent;border-radius:11px;
+    font-size:12.5px;font-weight:600;line-height:1;white-space:nowrap;cursor:pointer;
+    transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease,box-shadow .18s ease;
+  }
+  .btn svg{width:15px;height:15px;flex:none}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+  .btn-primary{
+    color:#fff;background:linear-gradient(145deg,#18775C,#0F5D47);
+    box-shadow:0 9px 20px -14px rgba(13,83,64,.85), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .btn-primary:hover{background:linear-gradient(145deg,#1A8063,#0C5641);box-shadow:0 12px 24px -15px rgba(13,83,64,.9)}
+  .btn-light{background:#F4FBF7;color:#144D3B;box-shadow:0 10px 22px -18px rgba(0,0,0,.65)}
+  .btn-light:hover{background:#fff}
+  .btn-outline-light{
+    color:#F1FAF5;background:rgba(255,255,255,.045);
+    border-color:rgba(230,248,238,.19);
+  }
+  .btn-outline-light:hover{background:rgba(255,255,255,.1);border-color:rgba(230,248,238,.3)}
+  .btn-ghost{background:#fff;border-color:#DFE7E1;color:#40544A}
+  .btn-ghost:hover{background:#F8FBF8;border-color:#C9D7CE;color:#1D392C}
+  .btn-soft{background:var(--brand-soft);border-color:transparent;color:#1A604A}
+  .btn-soft:hover{background:#DFF1E8}
+  .btn-sm{height:35px;padding:0 13px;border-radius:9px;font-size:11px}
+  .btn-block{width:100%}
+  .btn-spinner{
+    width:14px;height:14px;border:1.8px solid currentColor;border-right-color:transparent;
+    border-radius:50%;display:inline-block;animation:spin .75s linear infinite;flex:none;
+  }
+
+  /* ---------- Content grid ---------- */
+  .content-grid{
+    display:grid;grid-template-columns:minmax(0,1fr) 318px;gap:28px;
+    align-items:start;margin-top:34px;
+  }
+  .main-col{min-width:0}
+  .sidebar{display:flex;flex-direction:column;gap:16px;position:sticky;top:98px}
+  .section-head{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:18px;
+    margin-bottom:14px;
+  }
+  .section-head h2{margin:0;font-size:19px;font-weight:650;letter-spacing:-.45px;color:#1B3026}
+  .section-head p{margin:5px 0 0;font-size:11.5px;color:var(--muted-2)}
+  .section-head .btn{flex:none}
+  .orders-head{align-items:center;margin-top:32px}
+
+  /* ---------- Account cards ---------- */
+  .accounts-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+  .account-card{
+    position:relative;overflow:hidden;padding:20px 20px 18px;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-card);
+    box-shadow:var(--shadow-card);
+    transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+    animation:riseIn .5s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .account-card:nth-child(2){animation-delay:.055s}
+  .account-card:nth-child(3){animation-delay:.1s}
+  .account-card:nth-child(4){animation-delay:.145s}
+  .account-card::after{
+    content:"";position:absolute;right:-72px;top:-88px;width:190px;height:190px;border-radius:50%;
+    pointer-events:none;
+  }
+  .account-card[data-type="water"]::after{background:radial-gradient(circle,rgba(46,109,168,.085),transparent 69%)}
+  .account-card[data-type="electricity"]::after{background:radial-gradient(circle,rgba(181,122,35,.1),transparent 69%)}
+  .account-card:hover{transform:translateY(-2px);border-color:#D4E0D8;box-shadow:0 18px 38px -30px rgba(18,48,36,.45)}
+  .account-card.is-low{
+    border-color:rgba(181,122,35,.27);
+    background:linear-gradient(180deg,#FFFDF8 0%,#FFFFFF 46%);
+  }
+  .account-card.is-refreshing .balance-amount{opacity:.4}
+  .account-card.is-refreshing .balance-amount .cents{opacity:.8}
+  .account-head{display:flex;align-items:flex-start;gap:11px;position:relative;z-index:1}
+  .utility-icon{
+    width:43px;height:43px;border-radius:13px;display:grid;place-items:center;flex:none;
+  }
+  .utility-icon svg{width:21px;height:21px}
+  .utility-icon.water{background:#EBF2FA;color:#2E6DA8}
+  .utility-icon.electricity{background:#FBF2E2;color:#B37720}
+  .account-title{flex:1;min-width:0;padding-top:1px}
+  .account-title h3{
+    margin:0 0 4px;font-size:15.5px;font-weight:650;letter-spacing:-.15px;color:#20362B;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .account-title p{
+    margin:0;font-size:10.5px;color:var(--muted-2);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .refresh-btn{width:31px;height:31px;border-radius:8px;color:#9BA79F;margin-top:-2px;flex:none}
+  .refresh-btn:hover{background:#F7FAF7;border-color:var(--line-soft)}
+  .refresh-btn svg{width:15px;height:15px}
+  .is-refreshing .refresh-btn svg{animation:spin 1s linear infinite}
+  .account-balance{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+    margin-top:22px;position:relative;z-index:1;
+  }
+  .balance-label{display:block;font-size:10.5px;color:var(--muted-2);margin-bottom:5px}
+  .balance-amount{
+    display:flex;align-items:baseline;gap:1px;color:#1B3026;
+    font-size:34px;line-height:1;font-weight:650;letter-spacing:-1.6px;
+    font-variant-numeric:tabular-nums;transition:opacity .2s ease;
+  }
+  .balance-amount .currency{font-size:17px;font-weight:500;letter-spacing:0;color:#5D7066;margin-right:1px}
+  .balance-amount .cents{font-size:22px;letter-spacing:-.4px;color:#677A6F;margin-left:1px}
+  .balance-amount.is-low{color:#8B5B15}
+  .balance-amount.is-low .currency{color:#A57B3E}
+  .balance-amount.is-low .cents{color:#A57B3E}
+  .status-pill{
+    display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;
+    font-size:10.5px;font-weight:600;white-space:nowrap;flex:none;margin-top:1px;
+  }
+  .status-pill i{width:4px;height:4px;border-radius:50%;flex:none}
+  .status-pill.low{background:var(--amber-soft);color:#8E601C}
+  .status-pill.low i{background:#C58A2F}
+  .status-pill.ok{background:#EDF7F2;color:#2D7658}
+  .status-pill.ok i{background:#309969}
+  .status-pill.muted{background:#F2F5F2;color:#7F8D84}
+  .status-pill.muted i{background:#AAB6AE}
+  .status-pill.loading{background:#EDF4FA;color:#3C6F99}
+  .status-pill.loading .mini-spinner{width:8px;height:8px;border-width:1.2px}
+  .mini-spinner{
+    width:9px;height:9px;border:1.5px solid currentColor;border-right-color:transparent;
+    border-radius:50%;display:inline-block;animation:spin .8s linear infinite;flex:none;
+  }
+  .balance-meta{
+    display:flex;flex-wrap:wrap;align-items:center;gap:5px 7px;margin-top:9px;
+    font-size:10px;color:#98A49C;position:relative;z-index:1;
+  }
+  .meta-dot{width:2px;height:2px;border-radius:50%;background:#C0CAC3;flex:none}
+  .threshold-btn{
+    display:inline-flex;align-items:center;gap:3px;padding:0;border:0;background:none;
+    color:#728178;font-size:10px;cursor:pointer;border-bottom:1px dashed #C5D0C8;
+    transition:color .18s ease,border-color .18s ease;
+  }
+  .threshold-btn:hover{color:#2C6B51;border-color:#8DB5A0}
+  .threshold-btn svg{width:10px;height:10px}
+  .account-stats{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;
+    margin:16px 0;padding:12px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);
+    position:relative;z-index:1;
+  }
+  .account-stats > div{min-width:0}
+  .account-stats span{display:block;font-size:9.5px;color:#9AA69E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .account-stats strong{
+    display:block;margin-top:4px;font-size:12.5px;font-weight:600;color:#3C5045;
+    font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .account-actions{display:flex;gap:7px;position:relative;z-index:1}
+  .account-actions .btn{height:37px;flex:1;padding:0 10px;font-size:11.5px;border-radius:9px}
+  .account-actions .btn-primary{box-shadow:0 7px 16px -13px rgba(13,83,64,.9)}
+  .empty-accounts{
+    grid-column:1/-1;padding:48px 24px;text-align:center;
+    background:#fff;border:1px dashed #D8E3DB;border-radius:var(--radius-card);
+  }
+  .empty-accounts .empty-icon{
+    width:52px;height:52px;border-radius:16px;margin:0 auto 14px;display:grid;place-items:center;
+    background:var(--brand-soft);color:var(--brand);
+  }
+  .empty-accounts h3{margin:0 0 6px;font-size:14px}
+  .empty-accounts p{margin:0 0 16px;font-size:10.5px;color:var(--muted-2)}
+
+  /* ---------- Tabs & orders ---------- */
+  .tabs{display:inline-flex;align-items:center;gap:1px;padding:3px;background:#EBEFEA;border-radius:10px;flex:none}
+  .tab{
+    display:inline-flex;align-items:center;gap:5px;height:27px;padding:0 10px;border:0;
+    border-radius:7px;background:transparent;color:#78877E;font-size:11px;font-weight:500;
+    cursor:pointer;white-space:nowrap;transition:background .18s ease,color .18s ease,box-shadow .18s ease;
+  }
+  .tab:hover{color:#253C30}
+  .tab.is-active{background:#fff;color:#213A2D;box-shadow:0 1px 4px rgba(20,50,36,.1);font-weight:600}
+  .tab .tab-count{font-size:9px;color:#99A49D;font-variant-numeric:tabular-nums}
+  .tab.is-active .tab-count{color:#4E7B66}
+  .orders-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius-card);
+    overflow:hidden;box-shadow:var(--shadow-card);
+  }
+  .sync-banner{
+    display:flex;align-items:center;gap:10px;padding:11px 17px;
+    background:linear-gradient(90deg,#FBF6EB,#FDFBF6 70%);
+    border-bottom:1px solid #F1E7D4;color:#775B2B;font-size:11px;
+  }
+  .sync-banner-icon{
+    width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none;
+    background:#F5E8CD;color:#A06A19;
+  }
+  .sync-banner-icon .spinner-ring{width:12px;height:12px;border-width:1.5px}
+  .sync-banner-text{flex:1;min-width:0;line-height:1.55}
+  .sync-banner-text strong{font-weight:650;color:#6D4C12}
+  .sync-banner .sync-btn{
+    border:0;background:none;padding:4px 2px;color:#8B5E16;font-size:11px;font-weight:600;
+    cursor:pointer;white-space:nowrap;text-decoration:underline;text-underline-offset:3px;flex:none;
+  }
+  .sync-banner .sync-btn:disabled{color:#AE9A74;cursor:wait;text-decoration:none}
+  .order-list{display:flex;flex-direction:column}
+  .order-row{
+    display:flex;align-items:center;gap:12px;width:100%;padding:14px 17px;
+    border:0;border-bottom:1px solid var(--line-soft);background:#fff;
+    text-align:left;cursor:pointer;transition:background .18s ease;
+  }
+  .order-row:last-child{border-bottom:0}
+  .order-row:hover{background:#FAFCFA}
+  .order-row:active{background:#F7FAF7}
+  .order-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:none}
+  .order-icon svg{width:16px;height:16px}
+  .order-icon.tone-success{background:#EDF7F1;color:#2D8961}
+  .order-icon.tone-pending{background:#FBF3E3;color:#A87322}
+  .order-icon.tone-info{background:#EDF4FA;color:#41739C}
+  .order-icon.tone-danger{background:#FBEDEB;color:#AD574D}
+  .order-icon .spinner-ring{width:16px;height:16px;border-width:1.7px}
+  .order-icon .spin-slow{animation:spin 2.8s linear infinite}
+  .order-info{flex:1;min-width:0}
+  .order-info strong{
+    display:block;font-size:12.5px;font-weight:600;color:#2B4034;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .order-info small{
+    display:flex;align-items:center;gap:5px;margin-top:4px;font-size:10px;color:#96A199;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .order-info small .dot{width:2px;height:2px;border-radius:50%;background:#C4CDC6;flex:none}
+  .order-end{display:flex;align-items:center;gap:12px;flex:none}
+  .order-amount{
+    min-width:72px;text-align:right;font-size:12.5px;font-weight:650;color:#2C4236;
+    font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+  .order-amount.is-muted{color:#96A39B;font-weight:500}
+  .order-badge{
+    display:inline-flex;align-items:center;justify-content:center;gap:4px;
+    min-width:63px;padding:4px 7px;border-radius:999px;font-size:9.5px;font-weight:600;white-space:nowrap;
+  }
+  .order-badge svg{width:9px;height:9px}
+  .badge-success{background:#ECF7F1;color:#2A7A57}
+  .badge-pending{background:#FBF3E3;color:#94631D}
+  .badge-info{background:#EDF4FA;color:#386E9B}
+  .badge-danger{background:#FBEDEB;color:#A65046}
+  .badge-muted{background:#F1F4F2;color:#76847B}
+  .order-chevron{display:flex;color:#B5C0B8;flex:none}
+  .order-chevron svg{width:13px;height:13px}
+  .order-empty{padding:42px 18px;text-align:center}
+  .order-empty .empty-icon{
+    width:44px;height:44px;border-radius:14px;margin:0 auto 12px;display:grid;place-items:center;
+    background:#F3F7F3;color:#91A299;
+  }
+  .order-empty h3{margin:0 0 5px;font-size:13px;font-weight:600;color:#4D6055}
+  .order-empty p{margin:0;font-size:10.5px;color:#9AA69E}
+
+  /* ---------- Sidebar ---------- */
+  .side-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-card);
+    padding:19px;box-shadow:var(--shadow-card);
+  }
+  .side-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+  .side-head h3{margin:0;font-size:12.5px;font-weight:650;color:#2A4034}
+  .status-tag{
+    display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;
+    background:#EEF7F2;color:#2D7958;font-size:9.5px;font-weight:600;
+  }
+  .status-tag i{width:4px;height:4px;border-radius:50%;background:#329B6D;animation:pulse 2.4s ease-in-out infinite}
+  .status-list{list-style:none;margin:0;padding:0}
+  .status-list li{display:flex;align-items:center;gap:9px;padding:10px 0;border-top:1px solid #F1F4F1}
+  .status-list li:first-child{border-top:0;padding-top:1px}
+  .s-dot{width:5px;height:5px;border-radius:50%;background:#329B6D;flex:none;box-shadow:0 0 0 3px rgba(50,155,109,.08)}
+  .s-dot.amber{background:#C08A2D;box-shadow:0 0 0 3px rgba(192,138,45,.09)}
+  .s-info{flex:1;min-width:0}
+  .s-info strong{display:block;font-size:11px;font-weight:500;color:#41554A}
+  .s-info small{display:block;margin-top:2px;font-size:9.5px;color:#99A59D}
+  .s-value{font-size:10px;color:#75867C;white-space:nowrap}
+  .s-value.amber{color:#9B6C24}
+  .s-link{border:0;background:none;padding:2px 0;color:#287257;font-size:10px;font-weight:600;cursor:pointer;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
+  .side-action{
+    width:100%;height:35px;margin-top:13px;border:1px solid var(--line);
+    border-radius:9px;background:#FAFCFA;color:#50655A;font-size:10.5px;
+    display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;
+    transition:background .18s ease,border-color .18s ease,color .18s ease;
+  }
+  .side-action:hover{background:#F5F9F5;border-color:#D2DED6;color:#233C2F}
+  .side-action svg{width:13px;height:13px}
+  .help-card{
+    background:
+      radial-gradient(240px 160px at 110% -20%, rgba(83,165,128,.12), transparent 65%),
+      linear-gradient(145deg,#F2F8F3,#FBFCF9);
+    border-color:#E2ECE5;
+  }
+  .help-icon{
+    width:36px;height:36px;border-radius:11px;display:grid;place-items:center;
+    background:#fff;color:#2D7B5D;box-shadow:0 5px 14px -9px rgba(28,75,55,.5);
+    margin-bottom:12px;
+  }
+  .help-card h3{margin:0 0 6px;font-size:13px;font-weight:650;color:#294337}
+  .help-card p{margin:0 0 13px;font-size:10.5px;line-height:1.7;color:#7D8D83}
+  .help-card .btn{height:34px;font-size:10.5px;background:#fff;border-color:#E1EAE3;border-radius:9px}
+  .security-note{
+    display:flex;align-items:flex-start;gap:7px;padding:0 3px;color:#96A39B;
+    font-size:9.5px;line-height:1.7;
+  }
+  .security-note svg{width:12px;height:12px;flex:none;margin-top:2px;color:#8CA096}
+
+  /* ---------- Empty/loading/error ---------- */
+  .loading-page{display:flex;flex-direction:column;gap:0;animation:fadeIn .25s ease both}
+  .sk-block,.sk-line,.sk-circle,.sk-account,.sk-side,.sk-orders,.sk-chart,.sk-rows{
+    background:linear-gradient(100deg,#E9EEEA 25%,#F5F7F4 40%,#E9EEEA 55%);
+    background-size:300% 100%;animation:shimmer 1.45s ease-in-out infinite;
+  }
+  .sk-block{border-radius:30px}
+  .sk-hero{height:306px;border-radius:30px;position:relative;overflow:hidden}
+  .sk-hero::before{
+    content:"";position:absolute;left:42px;top:48px;width:160px;height:9px;border-radius:5px;
+    background:rgba(255,255,255,.55);box-shadow:0 27px 0 -1px rgba(255,255,255,.6),0 63px 0 -1px rgba(255,255,255,.35),0 94px 0 -1px rgba(255,255,255,.25);
+  }
+  .sk-hero::after{
+    content:"";position:absolute;right:42px;top:42px;width:330px;height:220px;border-radius:22px;
+    background:rgba(255,255,255,.35);
+  }
+  .sk-grid{display:grid;grid-template-columns:minmax(0,1fr) 318px;gap:28px;margin-top:34px}
+  .sk-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+  .sk-account{height:278px;border-radius:var(--radius-card)}
+  .sk-orders{height:320px;border-radius:var(--radius-card);margin-top:32px}
+  .sk-side{height:242px;border-radius:var(--radius-card)}
+  .sk-side.short{height:164px;margin-top:16px}
+  .sk-heading{width:160px;height:19px;border-radius:6px;margin-bottom:31px}
+  .sk-subheading{width:105px;height:10px;border-radius:5px;margin:0 0 14px 44px}
+  .sk-copy{height:0}
+  .error-wrap{min-height:56vh;display:grid;place-items:center;padding:24px 0 10px}
+  .error-card{
+    width:min(100%,580px);padding:49px 44px 41px;text-align:center;
+    background:linear-gradient(180deg,#fff,#FBFCFA);border:1px solid var(--line);
+    border-radius:28px;box-shadow:0 30px 70px -58px rgba(16,54,39,.5);
+  }
+  .error-art{
+    position:relative;width:86px;height:86px;margin:0 auto 23px;border-radius:26px;
+    display:grid;place-items:center;color:#3F765D;
+    background:linear-gradient(145deg,#F0F7F2,#E7F1EA);
+    border:1px solid #DCEBE1;
+  }
+  .error-art::before,.error-art::after{content:"";position:absolute;border-radius:50%;border:1px solid #DDECE3}
+  .error-art::before{inset:-12px;opacity:.65}
+  .error-art::after{inset:-24px;opacity:.3}
+  .error-art svg{width:36px;height:36px}
+  .error-kicker{font-size:10px;letter-spacing:1.9px;font-weight:650;color:#8DA097;margin:0 0 8px}
+  .error-card h1{margin:0 0 9px;font-size:24px;letter-spacing:-.65px;font-weight:650;color:#223B2E}
+  .error-card > p{margin:0;font-size:12px;line-height:1.8;color:#84938A}
+  .error-actions{display:flex;justify-content:center;gap:9px;margin-top:23px}
+  .error-code{
+    margin:21px 0 0;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.35px;color:#A3AEA7;
+  }
+
+  /* ---------- Footer ---------- */
+  .footer{border-top:1px solid rgba(21,58,43,.075);padding:20px 28px;margin-top:12px}
+  .footer-inner{
+    max-width:1204px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;
+    gap:18px;flex-wrap:wrap;
+  }
+  .footer-brand{display:flex;align-items:center;gap:8px;font-size:10px;color:#8E9C93}
+  .footer-mark{
+    width:22px;height:22px;border-radius:7px;display:grid;place-items:center;
+    background:#E1EEE6;color:#3D775E;flex:none;
+  }
+  .footer-mark svg{width:14px;height:14px}
+  .footer-meta{display:flex;align-items:center;gap:14px;font-size:9.5px;color:#9AA69E}
+  .demo-label{display:inline-flex;align-items:center;gap:5px}
+  .demo-label::before{content:"";width:4px;height:4px;border-radius:50%;background:#B8C3BC}
+  .footer-link{
+    border:0;background:none;padding:0;color:#6F8076;font-size:9.5px;cursor:pointer;
+    text-decoration:underline;text-underline-offset:3px;
+  }
+  .footer-link:hover{color:#2C5D48}
+
+  /* ---------- Modal shell ---------- */
+  #modal-root:empty{display:none}
+  .modal-layer{
+    position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;
+  }
+  .modal-backdrop{
+    position:absolute;inset:0;background:rgba(10,28,20,.46);
+    -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+    animation:fadeIn .22s ease both;
+  }
+  .modal{
+    position:relative;width:100%;max-height:min(88vh,920px);overflow:auto;overscroll-behavior:contain;
+    background:#fff;border-radius:25px;box-shadow:var(--shadow-modal);
+    outline:none;animation:modalIn .26s cubic-bezier(.16,.84,.24,1) both;
+    scrollbar-width:thin;scrollbar-color:#CCD8D0 transparent;
+  }
+  .modal::-webkit-scrollbar{width:8px}
+  .modal::-webkit-scrollbar-thumb{background:#D5E0D8;border-radius:8px;border:2px solid #fff}
+  .modal-sm{max-width:468px}
+  .modal-md{max-width:552px}
+  .modal-lg{max-width:704px}
+  .modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:23px 25px 0}
+  .modal-kicker{
+    margin:0 0 6px;font-size:9.5px;font-weight:650;letter-spacing:1.6px;text-transform:uppercase;color:#8D9C93;
+  }
+  .modal-head h2{margin:0;font-size:19px;line-height:1.25;font-weight:650;letter-spacing:-.45px;color:#1A3024}
+  .modal-sub{margin:7px 0 0;font-size:11.5px;line-height:1.65;color:#89978F;max-width:420px}
+  .modal-close{width:31px;height:31px;border-radius:9px;color:#8C9A91;flex:none;margin-top:-3px}
+  .modal-close:hover{color:#253B2F}
+  .modal-close svg{width:16px;height:16px}
+  .modal-body{padding:20px 25px 25px}
+  .form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
+  .form-actions .btn{min-width:90px}
+  .modal-note{
+    display:flex;align-items:center;gap:7px;justify-content:center;margin:14px 0 0;
+    font-size:9.5px;color:#9BA79F;line-height:1.6;text-align:center;
+  }
+  .modal-note svg{width:12px;height:12px;flex:none;color:#8CA196}
+  .modal-divider{height:1px;background:#EEF2EE;margin:18px 0}
+
+  /* ---------- Forms ---------- */
+  .form-grid{display:flex;flex-direction:column;gap:15px}
+  .field{min-width:0}
+  .field-label{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;font-size:11.5px;font-weight:600;color:#3C5146}
+  .field-hint{font-size:9.5px;font-weight:400;color:#9BA79F}
+  .input,.select{
+    width:100%;height:43px;padding:0 12px;border:1px solid #DDE6DF;border-radius:10px;
+    background:#FAFCFA;color:#20362B;font-size:13px;outline:none;
+    transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;
+  }
+  .input::placeholder{color:#A7B2AA}
+  .input:hover,.select:hover{border-color:#C8D6CD}
+  .input:focus,.select:focus{border-color:#4A9478;background:#fff;box-shadow:0 0 0 3px rgba(74,148,120,.1)}
+  .select{
+    appearance:none;-webkit-appearance:none;padding-right:34px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2378887F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 12px center;
+  }
+  .input-wrap{position:relative}
+  .input-prefix{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12.5px;color:#6C7E73;pointer-events:none}
+  .input.has-prefix{padding-left:25px}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .field-error{display:none;margin:5px 0 0;font-size:9.5px;line-height:1.5;color:var(--danger)}
+  .field.has-error .input,.field.has-error .select{border-color:#D89B94;background:#FFFCFB}
+  .field.has-error .field-error{display:block}
+  .helper{margin:5px 0 0;font-size:9.5px;line-height:1.55;color:#9AA69E}
+  .type-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .type-option{position:relative;display:block;cursor:pointer}
+  .type-option input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+  .type-option-inner{
+    display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid #DDE6DF;
+    border-radius:11px;background:#FAFCFA;transition:all .18s ease;color:#576B60;
+  }
+  .type-option-inner > svg{width:19px;height:19px;color:#7A8C81;flex:none}
+  .type-option-text{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .type-option-text strong{font-size:11.5px;font-weight:600;color:#40554A}
+  .type-option-text small{font-size:9px;color:#9AA69E}
+  .type-option input:checked + .type-option-inner{border-color:#4A9478;background:#F1F8F4;box-shadow:inset 0 0 0 1px #4A9478}
+  .type-option input:checked + .type-option-inner > svg{color:#1B7258}
+  .type-option input:checked + .type-option-inner .type-option-text strong{color:#155A44}
+  .type-option input:focus-visible + .type-option-inner{outline:2px solid #22745B;outline-offset:2px}
+  .inline-note{
+    display:flex;align-items:flex-start;gap:7px;padding:10px 12px;border-radius:10px;
+    background:#F6FAF7;border:1px solid #EAF2EC;color:#7C8D82;font-size:9.5px;line-height:1.65;
+  }
+  .inline-note svg{width:13px;height:13px;flex:none;margin-top:1px;color:#759283}
+  .account-chip{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;
+    background:#F7FAF7;border:1px solid #ECF1EC;
+  }
+  .account-chip .utility-icon{width:34px;height:34px;border-radius:10px}
+  .account-chip .utility-icon svg{width:17px;height:17px}
+  .account-chip-copy{min-width:0;flex:1}
+  .account-chip-copy strong{display:block;font-size:11.5px;font-weight:600;color:#344B3F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .account-chip-copy small{display:block;margin-top:2px;font-size:9.5px;color:#96A299}
+  .account-chip-balance{font-size:10.5px;color:#71857A;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .toggle-row{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0 0;
+    border-top:1px solid #EFF3F0;margin-top:2px;
+  }
+  .toggle-copy strong{display:block;font-size:11px;font-weight:600;color:#40554A}
+  .toggle-copy small{display:block;margin-top:3px;font-size:9.5px;color:#9AA69E;line-height:1.5}
+  .switch{position:relative;display:inline-block;width:38px;height:22px;flex:none;cursor:pointer}
+  .switch input{position:absolute;opacity:0;width:1px;height:1px}
+  .switch-track{position:absolute;inset:0;background:#D9E2DC;border-radius:999px;transition:background .2s ease}
+  .switch-track::after{
+    content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 3px rgba(20,50,36,.2);transition:transform .2s ease;
+  }
+  .switch input:checked + .switch-track{background:#2C8A68}
+  .switch input:checked + .switch-track::after{transform:translateX(16px)}
+  .switch input:focus-visible + .switch-track{outline:2px solid #22745B;outline-offset:2px}
+
+  /* ---------- Recharge ---------- */
+  .recharge-account-row{display:flex;align-items:center;gap:9px;margin-top:6px}
+  .recharge-balance-hint{font-size:9.5px;color:#93A098}
+  .recharge-balance-hint.is-low{color:#9A681D}
+  .amount-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+  .amount-chip{
+    height:47px;border:1px solid #DDE6DF;border-radius:10px;background:#FAFCFA;
+    color:#3C5045;font-size:14px;font-weight:650;letter-spacing:-.2px;
+    cursor:pointer;font-variant-numeric:tabular-nums;transition:all .18s ease;
+  }
+  .amount-chip:hover{border-color:#B8CDC0;background:#F8FBF8}
+  .amount-chip.is-active{border-color:#2D7E61;background:#F0F8F4;color:#155B45;box-shadow:inset 0 0 0 1px #2D7E61}
+  .amount-chip .unit{font-size:9.5px;font-weight:500;color:#93A098;margin-left:1px}
+  .custom-amount-row{margin-top:7px}
+  .custom-amount-row .input{height:40px;font-size:13px;font-weight:600}
+  .pay-methods{display:flex;flex-direction:column;gap:7px}
+  .pay-method{
+    position:relative;display:flex;align-items:center;gap:9px;padding:9px 11px;
+    border:1px solid #E3EAE5;border-radius:10px;background:#fff;cursor:pointer;
+    transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;
+  }
+  .pay-method:hover{border-color:#CCD9D0;background:#FCFDFC}
+  .pay-method input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+  .pay-method:has(input:checked){border-color:#4A9478;background:#F8FCF9;box-shadow:inset 0 0 0 1px #4A9478}
+  .pay-logo{width:29px;height:29px;border-radius:8px;display:grid;place-items:center;flex:none}
+  .pay-logo svg{width:16px;height:16px}
+  .pay-logo.wechat{background:#EAF7EE;color:#27944D}
+  .pay-logo.alipay{background:#EBF3FC;color:#2377C9;font-size:13px;font-weight:650}
+  .pay-logo.bank{background:#F3F5F4;color:#63746A}
+  .pay-method-text{flex:1;min-width:0;font-size:11.5px;font-weight:500;color:#3C5146}
+  .pay-method-text small{display:block;margin-top:2px;font-size:9.5px;font-weight:400;color:#9AA69E}
+  .pay-radio{position:relative;width:15px;height:15px;border-radius:50%;border:1.5px solid #CBD8D0;flex:none}
+  .pay-method:has(input:checked) .pay-radio{border-color:#2D7E61}
+  .pay-method:has(input:checked) .pay-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#2D7E61}
+  .pay-method:has(input:focus-visible){outline:2px solid #22745B;outline-offset:2px}
+  .pay-summary{background:#F6FAF6;border:1px solid #EAF0EB;border-radius:12px;padding:11px 13px;margin-top:14px}
+  .summary-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 0;font-size:10.5px;color:#7C8C82}
+  .summary-row strong{font-weight:500;color:#3D5247;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .summary-row.total{margin-top:5px;padding-top:8px;border-top:1px dashed #DCE7DE;font-size:11.5px;color:#374C40;font-weight:600}
+  .summary-row.total strong{font-size:18px;font-weight:650;color:#143F2F;letter-spacing:-.4px}
+  .secure-line{display:flex;align-items:center;justify-content:center;gap:5px;margin:10px 0 0;font-size:9.5px;color:#9DA9A1}
+  .secure-line svg{width:11px;height:11px}
+  .payment-agreement{margin:11px 0 0;font-size:9.5px;line-height:1.6;color:#9AA69E;text-align:center}
+  .payment-agreement a{color:#5C826F;text-decoration:underline;text-underline-offset:2px}
+
+  /* ---------- Payment status ---------- */
+  .payment-view{padding:2px 0 0;text-align:center}
+  .status-orbit{
+    position:relative;width:76px;height:76px;margin:0 auto 17px;border-radius:50%;
+    display:grid;place-items:center;
+  }
+  .status-orbit::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid currentColor;opacity:.13}
+  .status-orbit svg{width:31px;height:31px}
+  .status-orbit.processing{background:#EDF4FA;color:#3F739C}
+  .status-orbit.pending{background:#FBF3E3;color:#A97222}
+  .status-orbit.success{background:#EAF7F0;color:#298B5E}
+  .status-orbit.failed{background:#FBEDEB;color:#A95248}
+  .status-orbit .spinner-ring{width:29px;height:29px;border-width:2.4px}
+  .status-orbit.small{width:58px;height:58px;margin-bottom:13px}
+  .status-orbit.small svg{width:24px;height:24px}
+  .status-orbit.small .spinner-ring{width:23px;height:23px;border-width:2px}
+  .payment-view h2{margin:0;font-size:21px;font-weight:650;letter-spacing:-.5px;color:#1D3428}
+  .payment-desc{max-width:345px;margin:8px auto 16px;font-size:11.5px;line-height:1.75;color:#819188}
+  .payment-amount{
+    margin:0 0 17px;font-size:33px;font-weight:650;letter-spacing:-1.1px;color:#183528;
+    font-variant-numeric:tabular-nums;
+  }
+  .payment-receipt{
+    text-align:left;background:#F8FAF8;border:1px solid #ECF1EC;border-radius:12px;
+    padding:10px 13px;margin:0 0 15px;
+  }
+  .receipt-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:4px 0;font-size:10.5px;color:#89978F}
+  .receipt-row strong{font-weight:500;color:#3C5146;text-align:right;word-break:break-all}
+  .receipt-row strong.mono{font-size:9.5px;letter-spacing:.1px}
+  .status-note{
+    display:flex;align-items:flex-start;gap:7px;text-align:left;padding:10px 11px;border-radius:10px;
+    font-size:9.5px;line-height:1.6;margin:0 0 15px;
+  }
+  .status-note.pending{background:#FBF6EB;border:1px solid #F0E4CD;color:#866127}
+  .status-note.success{background:#F2FAF5;border:1px solid #E0EEE5;color:#39745B}
+  .status-note svg{width:13px;height:13px;flex:none;margin-top:1px}
+  .payment-actions{display:flex;gap:8px;justify-content:center}
+  .payment-actions .btn{min-width:118px}
+  .payment-footnote{margin:12px 0 0;font-size:9.5px;color:#9EAAA2}
+  .balance-highlight{
+    display:inline-flex;align-items:center;gap:5px;margin-top:4px;padding:4px 8px;border-radius:999px;
+    background:#EEF8F2;color:#2A7A57;font-size:8.5px;font-weight:600;
+  }
+  .balance-highlight svg{width:10px;height:10px}
+
+  /* ---------- Order detail ---------- */
+  .order-hero{padding:2px 0 17px;text-align:center;border-bottom:1px solid #EFF3F0}
+  .order-hero h3{margin:0;font-size:19px;font-weight:650;letter-spacing:-.4px;color:#1D3428}
+  .order-hero p{margin:6px auto 0;max-width:350px;font-size:10.5px;line-height:1.7;color:#85948B}
+  .order-hero .detail-amount{margin-top:12px;font-size:31px;font-weight:650;letter-spacing:-1px;color:#19382A;font-variant-numeric:tabular-nums}
+  .order-meta{margin:0 0 4px}
+  .meta-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:8px 0;font-size:10.5px;border-bottom:1px dashed #F0F3F0}
+  .meta-row:last-child{border-bottom:0}
+  .meta-row > span{color:#95A199;flex:none}
+  .meta-row > strong{font-weight:500;color:#3B5044;text-align:right;word-break:break-all}
+  .timeline{padding-top:16px}
+  .timeline h4{margin:0 0 12px;font-size:10px;font-weight:650;color:#6F8176;letter-spacing:.3px}
+  .timeline-list{list-style:none;margin:0;padding:0}
+  .timeline-item{position:relative;display:flex;gap:10px;padding-bottom:15px}
+  .timeline-item:last-child{padding-bottom:0}
+  .timeline-item::before{content:"";position:absolute;left:8px;top:18px;bottom:0;width:1px;background:#E8EEE9}
+  .timeline-item:last-child::before{display:none}
+  .tl-dot{
+    width:17px;height:17px;border-radius:50%;display:grid;place-items:center;flex:none;
+    background:#F1F4F1;color:#A4B0A8;border:1px solid #E4EBE6;position:relative;z-index:1;
+  }
+  .tl-dot svg{width:9px;height:9px}
+  .tl-dot.done{background:#ECF7F1;color:#2A825C;border-color:#CDE8D8}
+  .tl-dot.active{background:#FBF3E3;color:#A46D1D;border-color:#EEDDBB}
+  .tl-dot.failed{background:#FBEDEB;color:#A85046;border-color:#EED3CE}
+  .tl-dot .spinner-ring{width:9px;height:9px;border-width:1.3px}
+  .tl-copy{min-width:0;flex:1;padding-top:1px}
+  .tl-copy strong{display:block;font-size:10.5px;font-weight:500;color:#40554A}
+  .tl-copy span{display:block;margin-top:2px;font-size:9.5px;line-height:1.5;color:#99A59D}
+  .failure-note{
+    display:flex;align-items:flex-start;gap:8px;margin:12px 0 0;padding:10px 12px;border-radius:10px;
+    background:#FCF1EF;border:1px solid #F2DCD8;color:#9A4D44;font-size:9.5px;line-height:1.65;text-align:left;
+  }
+  .failure-note svg{width:13px;height:13px;flex:none;margin-top:1px}
+  .order-detail-actions{margin-top:18px;display:flex;gap:8px;justify-content:flex-end}
+  .order-detail-actions .btn{min-width:100px}
+
+  /* ---------- Bills ---------- */
+  .bill-loading{padding:2px 0}
+  .bill-loading .sk-line{height:11px;border-radius:6px;margin-bottom:9px}
+  .sk-block-sm{height:64px;border-radius:12px}
+  .sk-chart{height:188px;border-radius:14px;margin-top:12px}
+  .sk-rows{height:126px;border-radius:12px;margin-top:12px}
+  .bill-summary{
+    display:grid;grid-template-columns:repeat(3,1fr);padding:13px 3px;margin-bottom:13px;
+    border:1px solid #EAF0EB;border-radius:13px;background:#F8FAF8;
+  }
+  .bill-summary > div{padding:0 14px;border-left:1px solid #E7EEE8;min-width:0}
+  .bill-summary > div:first-child{border-left:0}
+  .bill-summary span{display:block;font-size:9.5px;color:#8E9B93;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bill-summary strong{display:block;font-size:15px;font-weight:650;letter-spacing:-.3px;color:#284033;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .bill-summary strong.accent{color:#92601B}
+  .chart-card{border:1px solid #ECF1EC;border-radius:14px;padding:13px 14px 10px;margin-bottom:13px}
+  .chart-head{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px;color:#6D8075}
+  .chart-head strong{font-weight:600;color:#40554A}
+  .chart-head span{color:#9BA79F;font-size:9.5px}
+  .chart-bars{display:flex;align-items:flex-end;gap:9px;height:145px;margin-top:15px;padding:0 2px}
+  .bar-col{height:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
+  .bar-track{width:100%;max-width:29px;flex:1;min-height:0;display:flex;align-items:flex-end;background:#F3F7F3;border-radius:6px 6px 3px 3px;overflow:hidden}
+  .bar-fill{
+    width:100%;background:#C3DCCD;border-radius:5px 5px 2px 2px;
+    transform-origin:bottom;animation:growBar .6s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .bar-col.current .bar-fill{background:linear-gradient(180deg,#2C8466,#146B53)}
+  .bar-label{font-size:9px;color:#98A59C;white-space:nowrap}
+  .bar-col.current .bar-label{color:#3B6F59;font-weight:600}
+  .bill-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}
+  .bill-toolbar strong{font-size:10.5px;font-weight:600;color:#566B60}
+  .bill-refresh{display:inline-flex;align-items:center;gap:4px;border:0;background:none;padding:2px;color:#7E9186;font-size:9.5px;cursor:pointer}
+  .bill-refresh:hover{color:#22634B}
+  .bill-refresh svg{width:11px;height:11px}
+  .bill-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-top:1px solid #F0F3F0}
+  .bill-row:first-child{border-top:1px solid #EBF0EB}
+  .bill-month{width:52px;flex:none;font-size:10px;font-weight:600;color:#4A5E52}
+  .bill-desc{flex:1;min-width:0;font-size:9.5px;color:#9AA69E;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bill-amount{font-size:10.5px;font-weight:500;color:#3C5146;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .bill-state{flex:none;font-size:9px;padding:3px 6px;border-radius:999px;background:#F1F5F2;color:#798A80;white-space:nowrap}
+  .bill-state.pending{background:#FBF3E3;color:#95641D}
+  .bill-footnote{margin:9px 0 0;font-size:9px;line-height:1.6;color:#9CA8A0}
+  .bill-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+  .bill-actions .btn{min-width:94px}
+  .bill-low-tip{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    margin-bottom:13px;padding:9px 11px;border-radius:10px;background:#FBF6EB;border:1px solid #F0E5D1;
+    font-size:9.5px;color:#856329;
+  }
+  .bill-low-tip strong{font-weight:650;color:#795516}
+  .bill-low-tip button{border:0;background:none;color:#8C5E16;font-size:9.5px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+  .inline-error{padding:40px 14px 34px;text-align:center}
+  .inline-error-icon{
+    width:54px;height:54px;border-radius:16px;margin:0 auto 14px;display:grid;place-items:center;
+    background:#FCF2F0;color:#A75A4F;border:1px solid #F2E1DD;
+  }
+  .inline-error-icon svg{width:23px;height:23px}
+  .inline-error h3{margin:0 0 6px;font-size:15.5px;font-weight:650;color:#2A4034}
+  .inline-error p{margin:0 auto;max-width:310px;font-size:10.5px;line-height:1.7;color:#8E9C93}
+  .inline-error .btn{margin-top:15px;min-width:110px}
+  .inline-error-code{margin:14px 0 0;font-family:var(--font-mono);font-size:9px;color:#A5B0A9}
+
+  /* ---------- Low balance alert ---------- */
+  .low-alert{
+    position:fixed;right:22px;bottom:22px;z-index:90;width:min(376px,calc(100vw - 32px));
+    display:flex;align-items:flex-start;gap:11px;padding:16px;
+    background:#fff;border:1px solid #EBDDC5;border-radius:18px;
+    box-shadow:0 26px 70px -28px rgba(46,47,29,.5), 0 0 0 1px rgba(255,255,255,.45);
+    animation:alertIn .36s cubic-bezier(.16,.84,.24,1) both;
+  }
+  .low-alert::before{
+    content:"";position:absolute;left:0;top:19px;bottom:19px;width:2px;border-radius:2px;
+    background:linear-gradient(180deg,#D8A452,#B57A23);opacity:.8;
+  }
+  .low-alert-icon{
+    width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:none;
+    background:#FBF3E3;color:#A26B1C;
+  }
+  .low-alert-icon svg{width:18px;height:18px}
+  .low-alert-copy{flex:1;min-width:0}
+  .low-alert-top{display:flex;align-items:flex-start;gap:8px}
+  .low-alert-top > div{flex:1;min-width:0}
+  .low-alert h3{margin:0 0 4px;font-size:12.5px;font-weight:650;color:#3B3427;letter-spacing:-.1px}
+  .low-alert p{margin:0;font-size:11px;line-height:1.68;color:#7A7E70}
+  .low-alert p strong{font-weight:650;color:#7C581F}
+  .low-alert-more{display:block;margin-top:3px;font-size:8.5px;color:#A0722C}
+  .low-alert-close{
+    width:24px;height:24px;border:0;background:transparent;color:#A7AAA0;border-radius:6px;
+    display:grid;place-items:center;cursor:pointer;flex:none;margin:-2px -3px 0 0;
+  }
+  .low-alert-close:hover{background:#F7F7F3;color:#636D61}
+  .low-alert-close svg{width:14px;height:14px}
+  .low-alert-actions{display:flex;align-items:center;gap:9px;margin-top:11px}
+  .low-alert-actions .btn{height:32px;padding:0 11px;border-radius:8px;font-size:10.5px}
+  .low-alert-dismiss{border:0;background:none;padding:3px 0;color:#909B90;font-size:9.5px;cursor:pointer}
+  .low-alert-dismiss:hover{color:#5C6B60}
+
+  /* ---------- Toasts ---------- */
+  .toast-root{
+    position:fixed;top:88px;left:50%;transform:translateX(-50%);z-index:200;
+    display:flex;flex-direction:column;align-items:center;gap:7px;pointer-events:none;
+    width:min(410px,calc(100vw - 32px));
+  }
+  .toast{
+    pointer-events:auto;display:flex;align-items:center;gap:8px;max-width:100%;
+    padding:10px 13px;border-radius:11px;background:#173D2E;color:#F2FAF5;
+    box-shadow:0 15px 34px -16px rgba(10,37,26,.7);font-size:11.5px;line-height:1.45;
+    opacity:0;transform:translateY(-7px) scale(.98);
+    transition:opacity .22s ease,transform .22s ease;
+  }
+  .toast.show{opacity:1;transform:translateY(0) scale(1)}
+  .toast svg{width:14px;height:14px;flex:none;color:#9DE0BB}
+  .toast.danger svg{color:#F1A49A}
+  .toast.info svg{color:#A8D7F0}
+  .toast span{min-width:0}
+
+  /* ---------- Help / preview ---------- */
+  .help-hotline{
+    display:flex;align-items:center;gap:11px;padding:12px 13px;border-radius:12px;
+    background:linear-gradient(135deg,#F2F8F4,#FBFCFA);border:1px solid #E8F0EA;margin-bottom:15px;
+  }
+  .help-hotline-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#fff;color:#2A795A;flex:none;border:1px solid #E6EEE8}
+  .help-hotline-icon svg{width:16px;height:16px}
+  .help-hotline strong{display:block;font-size:11px;font-weight:600;color:#374D41}
+  .help-hotline small{display:block;margin-top:2px;font-size:9.5px;color:#93A098}
+  .help-hotline .hotline-number{margin-left:auto;font-size:12px;font-weight:650;color:#1E654D;letter-spacing:.2px;white-space:nowrap}
+  .faq-list{display:flex;flex-direction:column;gap:7px}
+  .faq-item{border:1px solid #E9EFE9;border-radius:10px;background:#FBFCFB;overflow:hidden}
+  .faq-item summary{
+    display:flex;align-items:center;justify-content:space-between;gap:13px;padding:11px 12px;
+    font-size:11px;font-weight:500;color:#40554A;cursor:pointer;list-style:none;
+  }
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary::after{content:"+";font-size:13px;font-weight:400;color:#8B9B91;line-height:1;transition:transform .18s ease;flex:none}
+  .faq-item[open] summary::after{transform:rotate(45deg)}
+  .faq-item p{margin:0;padding:0 12px 11px;font-size:10px;line-height:1.75;color:#84938A}
+  .state-intro{
+    padding:12px 13px;border:1px solid #EAF0EB;border-radius:11px;background:#F8FAF8;
+    font-size:10.5px;line-height:1.7;color:#84938A;margin-bottom:13px;
+  }
+  .state-intro strong{display:block;margin-bottom:2px;color:#41574B;font-weight:600;font-size:11px}
+  .state-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .state-option{
+    border:1px solid #E5ECE6;border-radius:11px;background:#FBFCFB;padding:11px;
+    text-align:left;cursor:pointer;transition:border-color .18s ease,background .18s ease,transform .18s ease;
+  }
+  .state-option:hover{border-color:#C8DAD0;background:#F8FBF8;transform:translateY(-1px)}
+  .state-option-icon{
+    width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#EDF4EF;color:#3B7C60;margin-bottom:7px;
+  }
+  .state-option-icon svg{width:15px;height:15px}
+  .state-option strong{display:block;font-size:10.5px;font-weight:600;color:#3D5346;margin-bottom:2px}
+  .state-option small{display:block;font-size:9.5px;line-height:1.55;color:#96A299}
+  .state-reset{
+    display:flex;justify-content:center;margin-top:14px;
+  }
+  .state-reset-btn{border:0;background:none;color:#7D9185;font-size:9.5px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .state-reset-btn:hover{color:#315B48}
+  .preview-footnote{margin:13px 0 0;padding-top:11px;border-top:1px solid #F0F3F0;font-size:9px;line-height:1.6;color:#A0ABA4;text-align:center}
+
+  /* ---------- Animations ---------- */
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.38}}
+  @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes modalIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes alertIn{from{opacity:0;transform:translateY(13px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes growBar{from{transform:scaleY(.06)}to{transform:scaleY(1)}}
+
+  @media (max-width:1080px){
+    .hero{grid-template-columns:minmax(0,1fr) 326px;gap:28px;padding:36px}
+    .content-grid{grid-template-columns:minmax(0,1fr) 292px;gap:22px}
+    .sk-grid{grid-template-columns:minmax(0,1fr) 292px;gap:22px}
+    .sidebar{top:94px}
+  }
+  @media (max-width:940px){
+    .main-nav{display:none}
+    .hero{grid-template-columns:1fr;padding:34px;min-height:0;gap:25px}
+    .hero-copy{max-width:640px}
+    .hero-overview{min-height:0;width:100%;padding:20px 21px}
+    .overview-label{margin-top:15px}
+    .overview-stats{margin-top:17px;padding-top:15px}
+    .content-grid{grid-template-columns:1fr;gap:16px}
+    .sk-grid{grid-template-columns:1fr;gap:16px}
+    .sidebar{position:static;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+    .security-note{grid-column:1/-1}
+    .orders-head{margin-top:28px}
+  }
+  @media (max-width:680px){
+    .topbar-inner{height:65px;padding:0 16px;gap:15px}
+    .brand-text small{display:none}
+    .brand-mark{width:34px;height:34px;border-radius:10px}
+    .brand-mark svg{width:22px;height:22px}
+    .topbar-actions{gap:5px}
+    .help-btn{display:none}
+    .avatar{width:33px;height:33px;font-size:11px}
+    .net-pill{height:29px;padding:0 8px}
+    .net-pill span:last-child{display:none}
+    .net-pill::after{content:"在线";font-size:9px;color:#718178}
+    .net-pill.is-loading::after{content:"同步"}
+    .net-pill.is-error::after{content:"异常"}
+    .page{padding:17px 16px 44px}
+    .hero{padding:27px 21px;border-radius:23px;gap:22px}
+    .eyebrow{font-size:9.5px;margin-bottom:13px;letter-spacing:1.9px}
+    .hero h1{font-size:31px;line-height:1.2;letter-spacing:-1.1px}
+    .hero-desc{font-size:12.5px;line-height:1.8;margin:12px 0 20px}
+    .hero-actions{gap:7px}
+    .hero-actions .btn{height:38px;font-size:10.5px;padding:0 13px}
+    .hero-overview{padding:17px;border-radius:17px}
+    .overview-head > span:first-child{font-size:10.5px}
+    .live-badge{font-size:9px}
+    .overview-balance{font-size:35px}
+    .overview-balance .currency{font-size:16px;margin-top:7px}
+    .overview-balance .cents{font-size:22px;margin-top:4px}
+    .overview-caption{font-size:9.5px}
+    .overview-stats strong{font-size:14px}
+    .overview-stats > div + div{padding-left:12px}
+    .content-grid{margin-top:25px}
+    .section-head{margin-bottom:12px;align-items:center}
+    .section-head h2{font-size:17px}
+    .section-head p{font-size:10.5px}
+    .section-head .btn-sm{height:32px;font-size:10.5px;padding:0 11px}
+    .accounts-grid{grid-template-columns:1fr}
+    .account-card{padding:17px 16px 16px;border-radius:19px}
+    .account-balance{margin-top:19px}
+    .balance-amount{font-size:31px}
+    .account-stats{margin:14px 0;padding:10px 0}
+    .account-actions .btn{height:35px}
+    .orders-head{align-items:flex-start;flex-direction:column;gap:9px;margin-top:27px}
+    .tabs{width:100%;overflow-x:auto;scrollbar-width:none}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{flex:1;justify-content:center;height:28px;padding:0 7px}
+    .orders-card{border-radius:19px}
+    .sync-banner{padding:10px 13px;font-size:10px}
+    .order-row{padding:12px 13px;gap:9px}
+    .order-icon{width:32px;height:32px;border-radius:9px}
+    .order-icon svg{width:15px;height:15px}
+    .order-info strong{font-size:11.5px}
+    .order-info small{font-size:9.5px}
+    .order-end{gap:5px;flex-direction:column;align-items:flex-end}
+    .order-amount{min-width:0;font-size:11.5px}
+    .order-badge{min-width:0;font-size:9px;padding:3px 6px}
+    .order-chevron{display:none}
+    .sidebar{grid-template-columns:1fr;gap:13px}
+    .side-card{padding:17px;border-radius:19px}
+    .security-note{margin-top:1px}
+    .modal-layer{padding:0;align-items:flex-end}
+    .modal{max-height:92vh;border-radius:22px 22px 0 0;max-width:none}
+    .modal-head{padding:21px 19px 0}
+    .modal-body{padding:17px 19px 21px}
+    .modal-head h2{font-size:18px}
+    .form-actions{position:sticky;bottom:0;background:#fff;padding-top:9px;padding-bottom:1px}
+    .form-actions .btn{flex:1}
+    .field-row{grid-template-columns:1fr}
+    .amount-grid{grid-template-columns:repeat(2,1fr)}
+    .amount-chip{height:44px;font-size:13px}
+    .payment-actions{flex-direction:column-reverse}
+    .payment-actions .btn{width:100%}
+    .order-detail-actions{flex-direction:column-reverse}
+    .order-detail-actions .btn{width:100%}
+    .bill-actions{flex-direction:column-reverse}
+    .bill-actions .btn{width:100%}
+    .bill-summary > div{padding:0 10px}
+    .bill-summary strong{font-size:13px}
+    .chart-bars{gap:5px;height:127px}
+    .bar-track{max-width:24px}
+    .low-alert{right:16px;left:16px;bottom:16px;width:auto;padding:14px;border-radius:16px}
+    .low-alert h3{font-size:12px}
+    .low-alert p{font-size:10.5px}
+    .low-alert-actions .btn{height:31px;font-size:10px}
+    .toast-root{top:74px}
+    .footer{padding:17px 16px}
+    .footer-inner{flex-direction:column;align-items:flex-start;gap:9px}
+    .error-wrap{padding:22px 0}
+    .error-card{padding:36px 22px 31px;border-radius:22px}
+    .error-card h1{font-size:21px}
+    .error-actions{flex-direction:column}
+    .error-actions .btn{width:100%}
+    .sk-hero{height:260px;border-radius:23px}
+    .sk-hero::after{display:none}
+    .sk-hero::before{left:22px;top:35px;width:130px}
+    .sk-cards{grid-template-columns:1fr}
+    .sk-account{height:248px}
+    .sk-orders{height:280px}
+    .state-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:390px){
+    .hero h1{font-size:28px}
+    .hero-overview{padding:15px}
+    .overview-stats span{font-size:9px}
+    .overview-stats strong{font-size:13px}
+    .balance-amount{font-size:30px}
+    .account-title h3{font-size:14.5px}
+    .order-info small{max-width:150px}
+    .modal-head{padding-left:16px;padding-right:16px}
+    .modal-body{padding-left:16px;padding-right:16px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{
+      animation-duration:.01ms!important;
+      animation-iteration-count:1!important;
+      transition-duration:.01ms!important;
+    }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#" data-action="scroll-top" aria-label="青禾校园首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" focusable="false">
+            <path d="M16 4.2S7.4 13.8 7.4 19.5a8.6 8.6 0 0 0 17.2 0C24.6 13.8 16 4.2 16 4.2Z" fill="#F7FCF9"/>
+            <path d="m17.6 12-6 8.4h3.9l-1.4 5.2 6-8.6h-3.8l1.3-5Z" fill="#0D5C48"/>
+          </svg>
+        </span>
+        <span class="brand-text">青禾校园<small>宿舍水电自助服务</small></span>
+      </a>
+
+      <nav class="main-nav" aria-label="主导航">
+        <a href="#" class="active" data-action="scroll-top">服务首页</a>
+        <a href="#orders" data-action="scroll-orders">充值订单</a>
+        <a href="#" data-action="open-help">帮助中心</a>
+      </nav>
+
+      <div class="topbar-actions">
+        <span class="campus-pill" title="当前默认寝室">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 20h16M6 20V9.4L12 5l6 4.4V20"></path><path d="M10 20v-4h4v4"></path><path d="M9.2 11h.01M12 11h.01M14.8 11h.01"></path>
+          </svg>
+          松园 3 栋 · 412
+        </span>
+        <button type="button" class="net-pill" id="net-pill" data-action="network-info" aria-label="服务连接状态">
+          <span class="net-dot" aria-hidden="true"></span>
+          <span id="net-label">连接中</span>
+        </button>
+        <button type="button" class="icon-btn help-btn" data-action="open-help" aria-label="帮助中心">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle><path d="M9.6 9.1a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 1.9-2.4 3.4"></path><path d="M12 17h.01"></path>
+          </svg>
+        </button>
+        <div class="avatar" aria-label="林知夏的宿舍账户" title="林知夏 · 松园 3 栋 412">林</div>
+      </div>
+    </div>
+  </header>
+
+  <main id="view" class="page" aria-busy="true"></main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" focusable="false">
+            <path d="M16 4.2S7.4 13.8 7.4 19.5a8.6 8.6 0 0 0 17.2 0C24.6 13.8 16 4.2 16 4.2Z" fill="#3D775E"/>
+            <path d="m17.6 12-6 8.4h3.9l-1.4 5.2 6-8.6h-3.8l1.3-5Z" fill="#E1EEE6"/>
+          </svg>
+        </span>
+        <span>青禾校园 · 让每一滴水、每一度电都有数</span>
+      </div>
+      <div class="footer-meta">
+        <span class="demo-label">校园演示环境 · 页面数据均为模拟</span>
+        <button type="button" class="footer-link" data-action="open-state-preview">界面状态预览</button>
+      </div>
+    </div>
+  </footer>
+
+  <div id="modal-root"></div>
+  <div id="low-alert-root"></div>
+  <div id="toast-root" class="toast-root" role="status" aria-live="polite" aria-atomic="false"></div>
+
+<script>
+'use strict';
+
+/* ------------------------------------------------------------------
+ * 青禾校园 · 宿舍水电自助服务
+ * 纯前端单文件演示，所有数据、支付和同步均由内置模拟器完成。
+ * ------------------------------------------------------------------ */
+
+const view = document.getElementById('view');
+const modalRoot = document.getElementById('modal-root');
+const lowRoot = document.getElementById('low-alert-root');
+const toastRoot = document.getElementById('toast-root');
+const netPill = document.getElementById('net-pill');
+const netLabel = document.getElementById('net-label');
+
+const ICONS = {
+  water: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.4S5.8 10.7 5.8 15a6.2 6.2 0 0 0 12.4 0C18.2 10.7 12 3.4 12 3.4Z"/><path d="M9.7 15.1c.2 1.4 1.2 2.3 2.6 2.6"/></svg>',
+  bolt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13.1 2.8-7.7 10.7h5.2L9.8 21l7.8-11.2h-5.2l.7-7Z"/></svg>',
+  refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.7-4L3 10"/><path d="M3 5v5h5"/><path d="M4 13a8 8 0 0 0 14.7 4L21 14"/><path d="M21 19v-5h-5"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>',
+  chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>',
+  arrowRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>',
+  bill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5h12a1 1 0 0 1 1 1V21l-3-2-3 2-3-2-3 2V4.5a1 1 0 0 1 1-1Z"/><path d="M9.5 8h5M9.5 12h5"/></svg>',
+  bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8.5a6 6 0 0 0-12 0c0 7-2.5 7-2.5 8.5h17C20.5 15.5 18 15.5 18 8.5Z"/><path d="M10 20h4"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.8 6v5.4c0 4.3 3 7.9 7.2 9.6 4.2-1.7 7.2-5.3 7.2-9.6V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>',
+  help: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.1a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 1.9-2.4 3.4"/><path d="M12 17h.01"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.4 4.4L19 7.5"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>',
+  sync: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.7-4L3 10"/><path d="M3 5v5h5"/><path d="M4 13a8 8 0 0 0 14.7 4L21 14"/><path d="M21 19v-5h-5"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 4.2 2.9 17a1.7 1.7 0 0 0 1.5 2.5h15.2a1.7 1.7 0 0 0 1.5-2.5L13.7 4.2a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 5.5 4 4"/><path d="M4 20l4.2-.9L20 7.3a1.8 1.8 0 0 0 0-2.6l-.7-.7a1.8 1.8 0 0 0-2.6 0L4.9 15.8 4 20Z"/></svg>',
+  wechat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.4 14.8c1.9-.9 3.1-2.5 3.1-4.4 0-3-2.7-5.3-6.1-5.3-.8 0-1.5.1-2.2.4"/><path d="M8.6 8.9C5.1 8.9 2.3 11.3 2.3 14.2c0 1.7.9 3.2 2.4 4.2l-.6 2 2.4-1.2c.7.2 1.4.3 2.1.3 3.5 0 6.3-2.3 6.3-5.3S12.1 8.9 8.6 8.9Z"/><path d="M6.7 13h.01M10.5 13h.01M14.8 6.6h.01M18.1 6.6h.01"/></svg>',
+  bank: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.8" y="5.5" width="18.4" height="13" rx="2"/><path d="M2.8 10h18.4M7 15h3"/></svg>',
+  cloudOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 18.5h10a3.8 3.8 0 0 0 .9-7.5A5.7 5.7 0 0 0 8.7 8.5"/><path d="M5.3 8.3A5.8 5.8 0 0 0 6 19.3"/><path d="M3 3l18 18"/></svg>',
+  spark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z"/></svg>'
+};
+
+/* ---------------------------- Utilities ---------------------------- */
+
+const pad2 = (value) => String(value).padStart(2, '0');
+const round2 = (value) => Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+
+function escapeHTML(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[character]));
+}
+
+function money(value) {
+  return '¥' + Number(value || 0).toFixed(2);
+}
+
+function splitMoney(value) {
+  const parts = Number(value || 0).toFixed(2).split('.');
+  return { whole: Number(parts[0]).toLocaleString('zh-CN'), cents: parts[1] };
+}
+
+function formatDateTime(timestamp) {
+  if (!timestamp) return '—';
+  const date = new Date(timestamp);
+  return `${pad2(date.getMonth() + 1)}-${pad2(date.getDate())} ${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+}
+
+function formatClock(timestamp) {
+  const date = new Date(timestamp);
+  return `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+}
+
+function relativeTime(timestamp) {
+  const delta = Math.max(0, Date.now() - Number(timestamp));
+  if (delta < 60 * 1000) return '刚刚';
+  const minutes = Math.floor(delta / 60000);
+  if (minutes < 60) return `${minutes} 分钟前`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} 小时前`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days} 天前`;
+  return formatDateTime(timestamp);
+}
+
+function fullAccountNumber(accountNo) {
+  return String(accountNo || '').replace(/(\d{4})(?=\d)/g, '$1 ');
+}
+
+function maskedAccount(accountNo) {
+  const digits = String(accountNo || '');
+  return '尾号 ' + digits.slice(-4);
+}
+
+function methodLabel(method) {
+  return { wechat: '微信支付', alipay: '支付宝', campus: '校园卡' }[method] || '在线支付';
+}
+
+const ORDER_META = {
+  processing: { label: '支付中', tone: 'info', icon: 'spinner' },
+  pending_sync: { label: '待同步', tone: 'pending', icon: 'sync' },
+  success: { label: '已完成', tone: 'success', icon: 'check' },
+  failed: { label: '失败', tone: 'danger', icon: 'x' }
+};
+
+const TYPE_META = {
+  water: { name: '宿舍水费', provider: '校园水务服务中心', unit: '吨', price: 3.45, icon: 'water', dailyCost: 1.3 },
+  electricity: { name: '宿舍电费', provider: '后勤能源中心', unit: '度', price: 0.56, icon: 'bolt', dailyCost: 2.4 }
+};
+
+/* ---------------------------- Mock data ---------------------------- */
+
+function makeBills(type, units) {
+  const meta = TYPE_META[type];
+  const base = new Date();
+  base.setDate(1);
+  base.setHours(0, 0, 0, 0);
+  return units.map((usage, index) => {
+    const date = new Date(base.getFullYear(), base.getMonth() - index, 1);
+    return {
+      month: `${date.getFullYear()}-${pad2(date.getMonth() + 1)}`,
+      label: `${date.getMonth() + 1}月`,
+      usage: Number(usage),
+      unit: meta.unit,
+      amount: round2(usage * meta.price),
+      status: index === 0 ? 'pending' : 'paid'
+    };
+  });
+}
+
+function createInitialState() {
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+  const waterBills = makeBills('water', [5.8, 6.8, 7.2, 8.4, 6.1, 6.7]);
+  const powerBills = makeBills('electricity', [98.4, 112.6, 124.8, 136.2, 109.5, 118.7]);
+
+  return {
+    accounts: [
+      {
+        id: 'acc_water_main',
+        type: 'water',
+        alias: '松园 3 栋 · 412 水费',
+        provider: '校园水务服务中心',
+        accountNo: '880021456632',
+        holder: '林知夏',
+        balance: 18.6,
+        threshold: 30,
+        reminderEnabled: true,
+        dailyCost: 1.3,
+        bills: waterBills,
+        lastUpdated: now - 2 * 60 * 1000,
+        refreshing: false
+      },
+      {
+        id: 'acc_power_main',
+        type: 'electricity',
+        alias: '松园 3 栋 · 412 电费',
+        provider: '后勤能源中心',
+        accountNo: '320188450971',
+        holder: '林知夏',
+        balance: 126.4,
+        threshold: 50,
+        reminderEnabled: true,
+        dailyCost: 2.4,
+        bills: powerBills,
+        lastUpdated: now - 2 * 60 * 1000,
+        refreshing: false
+      }
+    ],
+    orders: [
+      {
+        orderNo: 'QH20261121093618',
+        accountId: 'acc_power_main',
+        amount: 100,
+        method: 'wechat',
+        status: 'pending_sync',
+        createdAt: now - 42 * 60 * 1000,
+        paidAt: now - 41 * 60 * 1000,
+        syncedAt: null,
+        failReason: '',
+        syncing: false
+      },
+      {
+        orderNo: 'QH20261112063241',
+        accountId: 'acc_water_main',
+        amount: 50,
+        method: 'wechat',
+        status: 'success',
+        createdAt: now - 9 * day,
+        paidAt: now - 9 * day + 45 * 1000,
+        syncedAt: now - 9 * day + 65 * 1000,
+        failReason: '',
+        syncing: false
+      },
+      {
+        orderNo: 'QH20261108091207',
+        accountId: 'acc_power_main',
+        amount: 100,
+        method: 'campus',
+        status: 'success',
+        createdAt: now - 13 * day,
+        paidAt: now - 13 * day + 39 * 1000,
+        syncedAt: now - 13 * day + 58 * 1000,
+        failReason: '',
+        syncing: false
+      },
+      {
+        orderNo: 'QH20261102210533',
+        accountId: 'acc_water_main',
+        amount: 100,
+        method: 'alipay',
+        status: 'failed',
+        createdAt: now - 19 * day,
+        paidAt: null,
+        syncedAt: null,
+        failReason: '支付通道响应超时，款项未扣除，请重新发起充值。',
+        syncing: false
+      }
+    ],
+    orderFilter: 'all',
+    lastSync: now
+  };
+}
+
+let state = createInitialState();
+let stateEpoch = 0;
+let bootToken = 0;
+let viewState = 'loading';
+let modalOpen = false;
+let currentModal = null;
+let lastFocusedElement = null;
+let lowAlertAutoShown = false;
+let dismissedLowAlerts = new Set();
+let lastLowAlertAccountId = null;
+let billLoadToken = 0;
+
+/* ---------------------------- Derived data ---------------------------- */
+
+function getAccount(accountId) {
+  return state.accounts.find((account) => account.id === accountId) || null;
+}
+
+function getOrder(orderNo) {
+  return state.orders.find((order) => order.orderNo === orderNo) || null;
+}
+
+function belowThreshold(account) {
+  return Boolean(account && Number(account.balance) < Number(account.threshold));
+}
+
+function isLow(account) {
+  return Boolean(account && account.reminderEnabled !== false && belowThreshold(account));
+}
+
+function lowAccounts() {
+  return state.accounts.filter(isLow);
+}
+
+function pendingOrders() {
+  return state.orders.filter((order) => order.status === 'pending_sync');
+}
+
+function pendingSyncCount() {
+  return pendingOrders().length;
+}
+
+function totalBalance() {
+  return round2(state.accounts.reduce((total, account) => total + Number(account.balance || 0), 0));
+}
+
+function suggestedRecharge(account) {
+  const target = Math.max(Number(account.threshold || 0) * 2, 50);
+  const need = target - Number(account.balance || 0);
+  return Math.max(50, Math.min(500, Math.ceil(need / 50) * 50));
+}
+
+function orderFilteredList(filter = state.orderFilter) {
+  const sorted = [...state.orders].sort((a, b) => b.createdAt - a.createdAt);
+  if (filter === 'pending') return sorted.filter((order) => order.status === 'pending_sync' || order.status === 'processing');
+  if (filter === 'success') return sorted.filter((order) => order.status === 'success');
+  if (filter === 'failed') return sorted.filter((order) => order.status === 'failed');
+  return sorted;
+}
+
+function orderCounts() {
+  return {
+    all: state.orders.length,
+    pending: state.orders.filter((order) => order.status === 'pending_sync' || order.status === 'processing').length,
+    success: state.orders.filter((order) => order.status === 'success').length,
+    failed: state.orders.filter((order) => order.status === 'failed').length
+  };
+}
+
+/* ---------------------------- Network status ---------------------------- */
+
+function setNetStatus(kind, label) {
+  if (!netPill || !netLabel) return;
+  netPill.classList.toggle('is-loading', kind === 'loading');
+  netPill.classList.toggle('is-error', kind === 'error');
+  netPill.dataset.state = kind;
+  netLabel.textContent = label;
+  netPill.setAttribute('aria-label', '服务连接状态：' + label);
+}
+
+/* ---------------------------- Icons & fragments ---------------------------- */
+
+function utilityIcon(account, extraClass = '') {
+  return `<span class="utility-icon ${account.type} ${extraClass}" aria-hidden="true">${ICONS[TYPE_META[account.type].icon]}</span>`;
+}
+
+function statusPillHTML(account) {
+  if (account.refreshing) {
+    return '<span class="status-pill loading"><span class="mini-spinner" aria-hidden="true"></span>查询中</span>';
+  }
+  if (isLow(account)) {
+    return '<span class="status-pill low"><i aria-hidden="true"></i>余额偏低</span>';
+  }
+  if (account.reminderEnabled === false && Number(account.balance) < Number(account.threshold)) {
+    return '<span class="status-pill muted"><i aria-hidden="true"></i>提醒已关闭</span>';
+  }
+  return '<span class="status-pill ok"><i aria-hidden="true"></i>余额充足</span>';
+}
+
+function orderStatusBadge(order) {
+  const meta = ORDER_META[order.status] || ORDER_META.processing;
+  let icon = '';
+  if (order.syncing || order.status === 'processing' || order.status === 'pending_sync') {
+    icon = '<span class="mini-spinner" aria-hidden="true"></span>';
+  }
+  return `<span class="order-badge badge-${meta.tone}">${icon}${order.syncing && order.status === 'pending_sync' ? '同步中' : meta.label}</span>`;
+}
+
+function orderIconHTML(order) {
+  const meta = ORDER_META[order.status] || ORDER_META.processing;
+  if (order.syncing || order.status === 'pending_sync') {
+    return `<span class="order-icon tone-pending" aria-hidden="true"><span class="spinner-ring"></span></span>`;
+  }
+  if (order.status === 'processing') {
+    return `<span class="order-icon tone-info" aria-hidden="true"><span class="spinner-ring"></span></span>`;
+  }
+  const iconName = order.status === 'success' ? 'check' : order.status === 'failed' ? 'x' : 'clock';
+  return `<span class="order-icon tone-${meta.tone}" aria-hidden="true">${ICONS[iconName]}</span>`;
+}
+
+/* ---------------------------- Page rendering ---------------------------- */
+
+function renderSkeleton() {
+  viewState = 'loading';
+  view.setAttribute('aria-busy', 'true');
+  view.innerHTML = `
+    <div class="loading-page" aria-label="正在加载寝室账户信息，请稍候">
+      <div class="sk-hero sk-block"></div>
+      <div class="sk-grid">
+        <div class="main-col">
+          <div class="sk-heading sk-line"></div>
+          <div class="sk-cards">
+            <div class="sk-account"></div>
+            <div class="sk-account"></div>
+          </div>
+          <div class="sk-orders"></div>
+        </div>
+        <aside>
+          <div class="sk-side"></div>
+          <div class="sk-side short"></div>
+        </aside>
+      </div>
+      <p class="sr-only">正在加载寝室账户信息，请稍候。</p>
+    </div>
+  `;
+}
+
+function heroHTML() {
+  const balance = splitMoney(totalBalance());
+  const lowCount = lowAccounts().length;
+  const syncCount = pendingSyncCount();
+
+  return `
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow">Campus utility · 青禾后勤</div>
+        <h1 id="hero-title">宿舍水电，<br><em>轻松搞定。</em></h1>
+        <p class="hero-desc">绑定寝室水电户号，随时掌握余额与账单。低余额及时提醒，在线充值后自动同步到账。</p>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-light" data-action="bind-account">
+            ${ICONS.plus}绑定宿舍户号
+          </button>
+          <button type="button" class="btn btn-outline-light" data-action="scroll-orders">
+            查看充值订单${ICONS.arrowRight}
+          </button>
+        </div>
+      </div>
+      <div class="hero-overview" aria-label="寝室账户总览">
+        <div class="overview-head">
+          <span>寝室账户总览</span>
+          <span class="live-badge"><i aria-hidden="true"></i>实时数据</span>
+        </div>
+        <span class="overview-label">寝室可用余额合计</span>
+        <div class="overview-balance">
+          <span class="currency">¥</span><span>${balance.whole}</span><span class="cents">.${balance.cents}</span>
+        </div>
+        <div class="overview-caption">已绑定 ${state.accounts.length} 个宿舍户号${lowCount ? ` · ${lowCount} 个需要留意` : ' · 一切正常'}</div>
+        <div class="overview-stats">
+          <div><span>已绑定户号</span><strong>${state.accounts.length} 个</strong></div>
+          <div><span>待同步订单</span><strong>${syncCount} 笔</strong></div>
+          <div><span>低余额提醒</span><strong class="${lowCount ? 'warn' : ''}">${lowCount} 个</strong></div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function accountCardHTML(account, index) {
+  const meta = TYPE_META[account.type];
+  const bill = account.bills[0];
+  const low = isLow(account);
+  const amount = splitMoney(account.balance);
+  const days = account.dailyCost > 0 ? Math.floor(Number(account.balance) / account.dailyCost) : null;
+  const daysText = days == null ? '—' : days < 1 ? '不足 1 天' : `约 ${days} 天`;
+
+  return `
+    <article class="account-card ${low ? 'is-low' : ''} ${account.refreshing ? 'is-refreshing' : ''}"
+      data-type="${account.type}" data-account-id="${escapeHTML(account.id)}"
+      style="animation-delay:${index * 55}ms" ${account.refreshing ? 'aria-busy="true"' : ''}>
+      <div class="account-head">
+        ${utilityIcon(account)}
+        <div class="account-title">
+          <h3 title="${escapeHTML(account.alias)}">${escapeHTML(account.alias)}</h3>
+          <p>${escapeHTML(account.provider)} · 户号${maskedAccount(account.accountNo)}</p>
+        </div>
+        <button type="button" class="icon-btn refresh-btn" data-action="refresh-account" data-id="${escapeHTML(account.id)}"
+          aria-label="刷新${escapeHTML(account.alias)}的余额" title="刷新余额" ${account.refreshing ? 'disabled' : ''}>
+          ${ICONS.refresh}
+        </button>
+      </div>
+
+      <div class="account-balance">
+        <div>
+          <span class="balance-label">寝室余额</span>
+          <div class="balance-amount ${low ? 'is-low' : ''}">
+            <span class="currency">¥</span>${amount.whole}<span class="cents">.${amount.cents}</span>
+          </div>
+        </div>
+        ${statusPillHTML(account)}
+      </div>
+
+      <div class="balance-meta">
+        <button type="button" class="threshold-btn" data-action="edit-threshold" data-id="${escapeHTML(account.id)}"
+          aria-label="设置${escapeHTML(account.alias)}的提醒阈值">
+          提醒阈值 ${money(account.threshold)}${ICONS.edit}
+        </button>
+        <span class="meta-dot" aria-hidden="true"></span>
+        <span>更新于 ${relativeTime(account.lastUpdated)}</span>
+      </div>
+
+      <div class="account-stats">
+        <div><span>本月用量</span><strong>${bill.usage} ${meta.unit}</strong></div>
+        <div><span>本月账单</span><strong>${money(bill.amount)}</strong></div>
+        <div><span>预计可用</span><strong>${daysText}</strong></div>
+      </div>
+
+      <div class="account-actions">
+        <button type="button" class="btn btn-primary" data-action="recharge" data-id="${escapeHTML(account.id)}">
+          ${ICONS.bolt}立即充值
+        </button>
+        <button type="button" class="btn btn-ghost" data-action="open-bills" data-id="${escapeHTML(account.id)}">
+          ${ICONS.bill}账单明细
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function emptyAccountsHTML() {
+  return `
+    <div class="empty-accounts">
+      <span class="empty-icon" aria-hidden="true">${ICONS.plus}</span>
+      <h3>绑定你的第一个宿舍水电户号</h3>
+      <p>绑定后即可查询寝室余额、查看账单并在线充值。</p>
+      <button type="button" class="btn btn-primary btn-sm" data-action="bind-account">${ICONS.plus}绑定户号</button>
+    </div>
+  `;
+}
+
+function tabsHTML() {
+  const counts = orderCounts();
+  const tabs = [
+    { key: 'all', label: '全部', count: counts.all },
+    { key: 'pending', label: '待处理', count: counts.pending },
+    { key: 'success', label: '已完成', count: counts.success },
+    { key: 'failed', label: '失败', count: counts.failed }
+  ];
+  return tabs.map((tab) => `
+    <button type="button" class="tab ${state.orderFilter === tab.key ? 'is-active' : ''}"
+      role="tab" aria-selected="${state.orderFilter === tab.key}" data-action="filter-orders" data-filter="${tab.key}">
+      ${tab.label}<span class="tab-count">${tab.count}</span>
+    </button>
+  `).join('');
+}
+
+function syncBannerHTML() {
+  const count = pendingSyncCount();
+  if (!count) return '';
+  const allSyncing = pendingOrders().every((order) => order.syncing);
+  return `
+    <div class="sync-banner" role="status">
+      <span class="sync-banner-icon" aria-hidden="true"><span class="spinner-ring"></span></span>
+      <span class="sync-banner-text"><strong>${count} 笔充值</strong>已支付，正在等待同步至宿舍水电账户</span>
+      <button type="button" class="sync-btn" data-action="sync-all" ${allSyncing ? 'disabled' : ''}>
+        ${allSyncing ? '同步中…' : '立即同步'}
+      </button>
+    </div>
+  `;
+}
+
+function orderRowHTML(order) {
+  const account = getAccount(order.accountId);
+  const alias = account ? account.alias : '已解绑寝室';
+  const amountText = order.status === 'failed' ? money(order.amount) : '+' + money(order.amount);
+  return `
+    <button type="button" class="order-row" data-action="open-order" data-order-no="${escapeHTML(order.orderNo)}"
+      aria-label="查看订单 ${escapeHTML(order.orderNo)}，状态 ${ORDER_META[order.status].label}">
+      ${orderIconHTML(order)}
+      <span class="order-info">
+        <strong>${escapeHTML(alias)}</strong>
+        <small>
+          <span>${formatDateTime(order.createdAt)}</span>
+          <span class="dot" aria-hidden="true"></span>
+          <span>${methodLabel(order.method)}</span>
+          <span class="dot" aria-hidden="true"></span>
+          <span>${order.orderNo}</span>
+        </small>
+      </span>
+      <span class="order-end">
+        <span class="order-amount ${order.status === 'failed' ? 'is-muted' : ''}">${amountText}</span>
+        ${orderStatusBadge(order)}
+      </span>
+      <span class="order-chevron" aria-hidden="true">${ICONS.chevron}</span>
+    </button>
+  `;
+}
+
+function orderRowsHTML() {
+  const list = orderFilteredList();
+  if (!list.length) {
+    return `
+      <div class="order-empty">
+        <span class="empty-icon" aria-hidden="true">${ICONS.bill}</span>
+        <h3>暂无相关订单</h3>
+        <p>完成一笔充值后，订单状态会显示在这里。</p>
+      </div>
+    `;
+  }
+  return list.map(orderRowHTML).join('');
+}
+
+function ordersSectionHTML() {
+  return `
+    <section class="orders-section" id="orders" aria-labelledby="orders-title">
+      <div class="section-head orders-head">
+        <div>
+          <h2 id="orders-title">充值订单</h2>
+          <p>查看线上充值进度与到账状态</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="订单筛选">${tabsHTML()}</div>
+      </div>
+      <div class="orders-card">
+        <div id="sync-banner-mount">${syncBannerHTML()}</div>
+        <div class="order-list" id="order-list-mount">${orderRowsHTML()}</div>
+      </div>
+    </section>
+  `;
+}
+
+function sidebarHTML() {
+  const syncCount = pendingSyncCount();
+  return `
+    <aside class="sidebar" aria-label="服务信息">
+      <section class="side-card" aria-labelledby="service-status-title">
+        <div class="side-head">
+          <h3 id="service-status-title">服务状态</h3>
+          <span class="status-tag"><i aria-hidden="true"></i>运行正常</span>
+        </div>
+        <ul class="status-list">
+          <li>
+            <span class="s-dot" aria-hidden="true"></span>
+            <span class="s-info"><strong>寝室数据</strong><small>${relativeTime(state.lastSync)}完成同步</small></span>
+            <span class="s-value">正常</span>
+          </li>
+          <li>
+            <span class="s-dot" aria-hidden="true"></span>
+            <span class="s-info"><strong>账单接口</strong><small>宿舍水电账单均已接入</small></span>
+            <span class="s-value">正常</span>
+          </li>
+          <li>
+            <span class="s-dot ${syncCount ? 'amber' : ''}" aria-hidden="true"></span>
+            <span class="s-info"><strong>订单同步</strong><small>${syncCount ? `${syncCount} 笔充值等待同步` : '暂无待同步订单'}</small></span>
+            ${syncCount ? '<button type="button" class="s-link" data-action="goto-pending">去处理</button>' : '<span class="s-value">正常</span>'}
+          </li>
+        </ul>
+        <button type="button" class="side-action" data-action="refresh-all">
+          ${ICONS.refresh}刷新全部数据
+        </button>
+      </section>
+
+      <section class="side-card help-card" aria-labelledby="help-title">
+        <span class="help-icon" aria-hidden="true">${ICONS.help}</span>
+        <h3 id="help-title">宿舍水电遇到问题？</h3>
+        <p>户号绑定、充值到账或账单异常，都可以快速找到答案。</p>
+        <button type="button" class="btn btn-ghost btn-block" data-action="open-help">查看帮助中心</button>
+      </section>
+
+      <p class="security-note">${ICONS.shield}<span>户号信息仅用于本校宿舍水电查询与充值，演示环境不会保存或上传任何真实数据。</span></p>
+    </aside>
+  `;
+}
+
+function renderDashboard() {
+  viewState = 'ready';
+  view.setAttribute('aria-busy', 'false');
+  setNetStatus('ok', '服务正常');
+  const cards = state.accounts.length
+    ? state.accounts.map(accountCardHTML).join('')
+    : emptyAccountsHTML();
+
+  view.innerHTML = `
+    ${heroHTML()}
+    <div class="content-grid">
+      <div class="main-col">
+        <section aria-labelledby="accounts-title">
+          <div class="section-head">
+            <div>
+              <h2 id="accounts-title">我的寝室</h2>
+              <p>寝室余额、账单与充值，一眼看清</p>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm" data-action="bind-account">${ICONS.plus}绑定户号</button>
+          </div>
+          <div class="accounts-grid">${cards}</div>
+        </section>
+        ${ordersSectionHTML()}
+      </div>
+      ${sidebarHTML()}
+    </div>
+  `;
+
+  reconcileLowAlert();
+}
+
+function renderErrorPage() {
+  viewState = 'error';
+  view.setAttribute('aria-busy', 'false');
+  setNetStatus('error', '连接异常');
+  view.innerHTML = `
+    <div class="error-wrap">
+      <section class="error-card" aria-labelledby="error-title">
+        <div class="error-art" aria-hidden="true">${ICONS.cloudOff}</div>
+        <p class="error-kicker">Connection issue</p>
+        <h1 id="error-title">数据暂时没有加载出来</h1>
+        <p>网络连接似乎不太稳定，未能获取寝室账户信息。<br>请检查网络后重新加载。</p>
+        <div class="error-actions">
+          <button type="button" class="btn btn-primary" data-action="retry-boot">${ICONS.refresh}重新加载</button>
+          <button type="button" class="btn btn-ghost" data-action="open-help">${ICONS.help}联系后勤</button>
+        </div>
+        <p class="error-code">ERR_NETWORK · ${formatClock(Date.now())}</p>
+      </section>
+    </div>
+  `;
+}
+
+/* ---------------------------- Boot ---------------------------- */
+
+function boot({ delay = 820, fail = false, showLow = false } = {}) {
+  const token = ++bootToken;
+  hideLowAlert();
+  setNetStatus('loading', '同步中');
+  renderSkeleton();
+
+  window.setTimeout(() => {
+    if (token !== bootToken) return;
+    if (fail) {
+      renderErrorPage();
+      return;
+    }
+    state.lastSync = Date.now();
+    renderDashboard();
+    if (showLow) {
+      window.setTimeout(() => {
+        if (token === bootToken) maybeShowLowAlert();
+      }, 760);
+    }
+  }, delay);
+}
+
+/* ---------------------------- Modal helpers ---------------------------- */
+
+function modalShell({ kicker = '', title = '', subtitle = '', body = '', size = 'md' } = {}) {
+  return `
+    <section class="modal modal-${size}" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+      <div class="modal-head">
+        <div>
+          ${kicker ? `<p class="modal-kicker">${kicker}</p>` : ''}
+          <h2 id="modal-title">${title}</h2>
+          ${subtitle ? `<p class="modal-sub">${subtitle}</p>` : ''}
+        </div>
+        <button type="button" class="icon-btn modal-close" data-action="close-modal" aria-label="关闭">${ICONS.close}</button>
+      </div>
+      ${body}
+    </section>
+  `;
+}
+
+function focusModal(modal) {
+  window.requestAnimationFrame(() => {
+    const preferred = modal.querySelector('[data-autofocus]');
+    if (preferred && typeof preferred.focus === 'function') {
+      preferred.focus({ preventScroll: true });
+    } else {
+      modal.focus({ preventScroll: true });
+    }
+  });
+}
+
+function showModal(content, context = {}, { focus = true } = {}) {
+  const firstOpen = !modalOpen;
+  if (firstOpen) {
+    lastFocusedElement = document.activeElement;
+    document.body.classList.add('modal-open');
+    document.addEventListener('keydown', onModalKeydown);
+  }
+  modalOpen = true;
+  currentModal = context;
+  modalRoot.innerHTML = `
+    <div class="modal-layer">
+      <div class="modal-backdrop" data-action="close-modal" aria-hidden="true"></div>
+      ${content}
+    </div>
+  `;
+  const modal = modalRoot.querySelector('.modal');
+  if (modal && focus) focusModal(modal);
+}
+
+function setModalBody(html, context = currentModal, { focus = false } = {}) {
+  const body = modalRoot.querySelector('.modal-body');
+  if (!body) return;
+  body.innerHTML = html;
+  currentModal = context;
+  if (focus) {
+    const modal = modalRoot.querySelector('.modal');
+    if (modal) focusModal(modal);
+  }
+}
+
+function closeModal() {
+  if (!modalOpen) return;
+  modalRoot.innerHTML = '';
+  modalOpen = false;
+  currentModal = null;
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onModalKeydown);
+  if (lastFocusedElement && lastFocusedElement.isConnected && typeof lastFocusedElement.focus === 'function') {
+    lastFocusedElement.focus({ preventScroll: true });
+  }
+  lastFocusedElement = null;
+}
+
+function onModalKeydown(event) {
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    closeModal();
+    return;
+  }
+  if (event.key !== 'Tab' || !modalOpen) return;
+  const modal = modalRoot.querySelector('.modal');
+  if (!modal) return;
+  const focusable = Array.from(modal.querySelectorAll(
+    'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])'
+  )).filter((element) => element.offsetParent !== null || element === document.activeElement);
+  if (!focusable.length) {
+    event.preventDefault();
+    modal.focus();
+    return;
+  }
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const active = document.activeElement;
+  if (event.shiftKey) {
+    if (active === first || active === modal) {
+      event.preventDefault();
+      last.focus();
+    }
+  } else if (active === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+/* ---------------------------- Toasts ---------------------------- */
+
+function toast(message, tone = 'default', duration = 3200) {
+  if (!toastRoot) return;
+  const element = document.createElement('div');
+  element.className = 'toast' + (tone === 'danger' ? ' danger' : tone === 'info' ? ' info' : '');
+  const icon = tone === 'danger' ? ICONS.alert : tone === 'info' ? ICONS.clock : ICONS.check;
+  element.innerHTML = `${icon}<span></span>`;
+  element.querySelector('span').textContent = message;
+  toastRoot.appendChild(element);
+  window.requestAnimationFrame(() => element.classList.add('show'));
+  window.setTimeout(() => {
+    element.classList.remove('show');
+    window.setTimeout(() => element.remove(), 240);
+  }, duration);
+}
+
+/* ---------------------------- Low balance alert ---------------------------- */
+
+function hideLowAlert(accountId = null) {
+  const alert = lowRoot.querySelector('.low-alert');
+  if (!alert) return;
+  if (accountId && alert.dataset.accountId !== accountId) return;
+  const id = alert.dataset.accountId;
+  if (id) dismissedLowAlerts.add(id);
+  lowRoot.innerHTML = '';
+  lastLowAlertAccountId = null;
+}
+
+function dismissLowAlert(accountId) {
+  if (accountId) dismissedLowAlerts.add(accountId);
+  if (lastLowAlertAccountId === accountId || !accountId) {
+    lowRoot.innerHTML = '';
+    lastLowAlertAccountId = null;
+  }
+}
+
+function showLowAlert(account, { force = false } = {}) {
+  if (!account || !isLow(account)) return;
+  if (dismissedLowAlerts.has(account.id) && !force) return;
+  if (force) dismissedLowAlerts.delete(account.id);
+  if (modalOpen) return;
+
+  const suggest = suggestedRecharge(account);
+  const lowList = lowAccounts();
+  const extra = lowList.length > 1 ? `<span class="low-alert-more">另有 ${lowList.length - 1} 个寝室也需要留意</span>` : '';
+  lowRoot.innerHTML = `
+    <aside class="low-alert" role="alert" aria-labelledby="low-alert-title" data-account-id="${escapeHTML(account.id)}">
+      <span class="low-alert-icon" aria-hidden="true">${ICONS.bell}</span>
+      <div class="low-alert-copy">
+        <div class="low-alert-top">
+          <div>
+            <h3 id="low-alert-title">寝室余额低于提醒阈值</h3>
+            <p><strong>${escapeHTML(account.alias)}</strong>当前余额 <strong>${money(account.balance)}</strong>，已低于你设置的 ${money(account.threshold)}。建议及时充值，别让寝室断水断电。${extra}</p>
+          </div>
+          <button type="button" class="low-alert-close" data-action="dismiss-low" data-id="${escapeHTML(account.id)}" aria-label="关闭余额提醒">
+            ${ICONS.close}
+          </button>
+        </div>
+        <div class="low-alert-actions">
+          <button type="button" class="btn btn-ghost" data-action="dismiss-low" data-id="${escapeHTML(account.id)}">稍后提醒</button>
+          <button type="button" class="btn btn-primary" data-action="low-recharge" data-id="${escapeHTML(account.id)}">充值 ${money(suggest)}</button>
+        </div>
+      </div>
+    </aside>
+  `;
+  lastLowAlertAccountId = account.id;
+  lowAlertAutoShown = true;
+}
+
+function maybeShowLowAlert({ force = false } = {}) {
+  const list = lowAccounts().filter((account) => force || !dismissedLowAlerts.has(account.id));
+  if (!list.length) return;
+  if (!force && lowAlertAutoShown) return;
+  showLowAlert(list[0], { force });
+}
+
+function reconcileLowAlert() {
+  const alert = lowRoot.querySelector('.low-alert');
+  if (!alert) return;
+  const account = getAccount(alert.dataset.accountId);
+  if (!account || !isLow(account)) {
+    lowRoot.innerHTML = '';
+    lastLowAlertAccountId = null;
+  }
+}
+
+/* ---------------------------- Bind account ---------------------------- */
+
+function openBindModal() {
+  hideLowAlert();
+  const body = `
+    <div class="modal-body">
+      <form id="bind-form" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <span class="field-label">费用类型</span>
+            <div class="type-switch" role="radiogroup" aria-label="费用类型">
+              <label class="type-option">
+                <input type="radio" name="type" value="water" checked>
+                <span class="type-option-inner">
+                  ${ICONS.water}
+                  <span class="type-option-text"><strong>宿舍水费</strong><small>淋浴 · 生活用水</small></span>
+                </span>
+              </label>
+              <label class="type-option">
+                <input type="radio" name="type" value="electricity">
+                <span class="type-option-inner">
+                  ${ICONS.bolt}
+                  <span class="type-option-text"><strong>宿舍电费</strong><small>照明 · 空调</small></span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field" data-field="accountNo">
+            <label class="field-label" for="bind-account-no">宿舍水电户号 <span class="field-hint">6–16 位数字</span></label>
+            <input class="input" id="bind-account-no" name="accountNo" type="text" inputmode="numeric"
+              autocomplete="off" maxlength="16" placeholder="例如 880021456632" data-autofocus>
+            <p class="field-error" data-error-for="accountNo"></p>
+            <p class="helper">可在宿舍缴费通知单、后勤公众号或校园卡服务大厅查询。</p>
+          </div>
+
+          <div class="field-row">
+            <div class="field" data-field="alias">
+              <label class="field-label" for="bind-alias">寝室备注 <span class="field-hint">选填</span></label>
+              <input class="input" id="bind-alias" name="alias" type="text" maxlength="20" autocomplete="off" placeholder="如 松园 3 栋 · 412 水费">
+              <p class="field-error" data-error-for="alias"></p>
+            </div>
+            <div class="field" data-field="threshold">
+              <label class="field-label" for="bind-threshold">低余额提醒阈值</label>
+              <div class="input-wrap">
+                <span class="input-prefix">¥</span>
+                <input class="input has-prefix" id="bind-threshold" name="threshold" type="number"
+                  inputmode="decimal" min="0" max="10000" step="1" value="30" data-default-threshold="water">
+              </div>
+              <p class="field-error" data-error-for="threshold"></p>
+              <p class="helper">低于该金额时在站内提醒</p>
+            </div>
+          </div>
+
+          <div class="inline-note">
+            ${ICONS.shield}
+            <span>仅用于本校宿舍水电查询与充值，信息将加密处理。演示环境不会发起真实查询。</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" data-action="close-modal">取消</button>
+          <button type="submit" class="btn btn-primary" id="bind-submit">${ICONS.plus}确认绑定</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  showModal(modalShell({
+    kicker: 'Bind dorm account',
+    title: '绑定宿舍水电户号',
+    subtitle: '绑定后即可查询寝室余额、账单与在线充值。',
+    body,
+    size: 'md'
+  }), { type: 'bind' });
+}
+
+function setFieldError(form, name, message) {
+  const field = form.querySelector(`[data-field="${name}"]`);
+  if (!field) return;
+  field.classList.toggle('has-error', Boolean(message));
+  const error = field.querySelector('[data-error-for="' + name + '"]');
+  if (error) error.textContent = message || '';
+}
+
+function setButtonBusy(button, label) {
+  if (!button) return;
+  button.disabled = true;
+  button.innerHTML = `<span class="btn-spinner" aria-hidden="true"></span>${label}`;
+}
+
+function handleBindSubmit(form) {
+  const formData = new FormData(form);
+  const type = formData.get('type') === 'electricity' ? 'electricity' : 'water';
+  const accountNo = String(formData.get('accountNo') || '').replace(/\s+/g, '');
+  const alias = String(formData.get('alias') || '').trim();
+  const threshold = Number(formData.get('threshold'));
+  let valid = true;
+
+  setFieldError(form, 'accountNo', '');
+  setFieldError(form, 'alias', '');
+  setFieldError(form, 'threshold', '');
+
+  if (!/^\d{6,16}$/.test(accountNo)) {
+    setFieldError(form, 'accountNo', '请输入 6–16 位数字户号');
+    valid = false;
+  } else if (state.accounts.some((account) => account.type === type && account.accountNo === accountNo)) {
+    setFieldError(form, 'accountNo', '该宿舍户号已经绑定，无需重复添加');
+    valid = false;
+  }
+  if (alias.length > 20) {
+    setFieldError(form, 'alias', '备注名称不能超过 20 个字符');
+    valid = false;
+  }
+  if (!Number.isFinite(threshold) || threshold < 0 || threshold > 10000) {
+    setFieldError(form, 'threshold', '请输入 0–10000 之间的金额');
+    valid = false;
+  }
+  if (!valid) {
+    const firstError = form.querySelector('.field.has-error .input, .field.has-error .select');
+    if (firstError) firstError.focus({ preventScroll: false });
+    return;
+  }
+
+  const submit = form.querySelector('#bind-submit');
+  setButtonBusy(submit, '正在验证户号…');
+  const epoch = stateEpoch;
+
+  window.setTimeout(() => {
+    if (epoch !== stateEpoch) return;
+    const meta = TYPE_META[type];
+    const units = type === 'water' ? [4.6, 5.2, 6.8, 7.1, 5.9, 6.3] : [86.4, 94.2, 102.8, 110.5, 96.7, 101.3];
+    const newAccount = {
+      id: 'acc_' + type + '_' + Date.now(),
+      type,
+      alias: alias || `新绑定寝室 · ${meta.name}`,
+      provider: meta.provider,
+      accountNo,
+      holder: '林知夏',
+      balance: type === 'water' ? 24.8 : 76.3,
+      threshold,
+      reminderEnabled: true,
+      dailyCost: meta.dailyCost,
+      bills: makeBills(type, units),
+      lastUpdated: Date.now(),
+      refreshing: false
+    };
+    state.accounts.unshift(newAccount);
+    closeModal();
+    renderDashboard();
+    toast('宿舍户号绑定成功，已为你同步最新余额', 'success');
+    if (isLow(newAccount)) {
+      window.setTimeout(() => showLowAlert(newAccount, { force: true }), 500);
+    }
+  }, 900);
+}
+
+/* ---------------------------- Threshold ---------------------------- */
+
+function openThresholdModal(accountId) {
+  const account = getAccount(accountId);
+  if (!account) return;
+  hideLowAlert(accountId);
+  const body = `
+    <div class="modal-body">
+      <form id="threshold-form" data-account-id="${escapeHTML(account.id)}" novalidate>
+        <div class="account-chip" style="margin-bottom:15px">
+          ${utilityIcon(account)}
+          <span class="account-chip-copy">
+            <strong>${escapeHTML(account.alias)}</strong>
+            <small>${escapeHTML(account.provider)} · 户号${maskedAccount(account.accountNo)}</small>
+          </span>
+          <span class="account-chip-balance">余额 ${money(account.balance)}</span>
+        </div>
+        <div class="form-grid">
+          <div class="field" data-field="threshold">
+            <label class="field-label" for="edit-threshold">低余额提醒阈值</label>
+            <div class="input-wrap">
+              <span class="input-prefix">¥</span>
+              <input class="input has-prefix" id="edit-threshold" name="threshold" type="number"
+                min="0" max="10000" step="1" value="${Number(account.threshold)}" data-autofocus>
+            </div>
+            <p class="field-error" data-error-for="threshold"></p>
+            <p class="helper">当寝室余额低于该金额时，会在页面右下角弹出提醒。设置为 0 可关闭金额提醒。</p>
+          </div>
+          <label class="toggle-row" for="reminder-enabled">
+            <span class="toggle-copy">
+              <strong>接收低余额提醒</strong>
+              <small>通过站内提醒及时获知余额变化</small>
+            </span>
+            <span class="switch">
+              <input type="checkbox" id="reminder-enabled" name="reminderEnabled" ${account.reminderEnabled !== false ? 'checked' : ''}>
+              <span class="switch-track" aria-hidden="true"></span>
+            </span>
+          </label>
+          <div class="inline-note">
+            ${ICONS.bell}
+            <span>提醒只会在本页面内展示。你可以随时调整阈值或关闭提醒。</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-ghost" data-action="close-modal">取消</button>
+          <button type="submit" class="btn btn-primary">保存设置</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  showModal(modalShell({
+    kicker: 'Balance alert',
+    title: '余额提醒设置',
+    subtitle: '给每个寝室户号设置一个合适的提醒金额。',
+    body,
+    size: 'sm'
+  }), { type: 'threshold', accountId });
+}
+
+function handleThresholdSubmit(form) {
+  const account = getAccount(form.dataset.accountId);
+  if (!account) return;
+  const value = Number(form.elements.threshold.value);
+  const enabled = Boolean(form.elements.reminderEnabled.checked);
+  if (!Number.isFinite(value) || value < 0 || value > 10000) {
+    setFieldError(form, 'threshold', '请输入 0–10000 之间的金额');
+    return;
+  }
+  setFieldError(form, 'threshold', '');
+  account.threshold = value;
+  account.reminderEnabled = enabled;
+  closeModal();
+  renderDashboard();
+  toast('余额提醒设置已更新', 'success');
+  if (isLow(account)) {
+    dismissedLowAlerts.delete(account.id);
+    window.setTimeout(() => {
+      if (!modalOpen) showLowAlert(account, { force: true });
+    }, 350);
+  }
+}
+
+/* ---------------------------- Recharge ---------------------------- */
+
+function openRecharge(accountId, presetAmount = 100) {
+  const account = getAccount(accountId) || state.accounts[0];
+  if (!account) {
+    toast('请先绑定一个宿舍水电户号', 'info');
+    openBindModal();
+    return;
+  }
+  if (lastLowAlertAccountId === account.id) hideLowAlert(account.id);
+
+  const quickAmounts = [50, 100, 200, 500];
+  const isQuick = quickAmounts.includes(Number(presetAmount));
+  const amount = isQuick ? Number(presetAmount) : Number(presetAmount) || 100;
+  const initialMethod = 'wechat';
+
+  const options = state.accounts.map((item) => `
+    <option value="${escapeHTML(item.id)}" ${item.id === account.id ? 'selected' : ''}>
+      ${escapeHTML(item.alias)} · ${maskedAccount(item.accountNo)}
+    </option>
+  `).join('');
+
+  const body = `
+    <div class="modal-body">
+      <form id="recharge-form" class="form-grid" novalidate>
+        <div class="field">
+          <label class="field-label" for="recharge-account">充值寝室</label>
+          <select class="select" id="recharge-account" name="accountId">${options}</select>
+          <div class="recharge-account-row">
+            <span class="recharge-balance-hint ${isLow(account) ? 'is-low' : ''}" id="recharge-balance-hint">
+              当前余额 ${money(account.balance)}${isLow(account) ? ' · 余额偏低' : ''}
+            </span>
+          </div>
+        </div>
+
+        <div class="field" data-field="amount">
+          <span class="field-label">充值金额 <span class="field-hint">单笔 ¥1–¥5000</span></span>
+          <div class="amount-grid">
+            ${quickAmounts.map((value) => `
+              <button type="button" class="amount-chip ${isQuick && value === amount ? 'is-active' : ''}"
+                data-action="choose-amount" data-amount="${value}" aria-pressed="${isQuick && value === amount}">
+                ¥${value}<span class="unit">元</span>
+              </button>
+            `).join('')}
+          </div>
+          <div class="custom-amount-row input-wrap">
+            <span class="input-prefix">¥</span>
+            <input class="input has-prefix" id="recharge-custom" name="customAmount" type="number"
+              inputmode="decimal" min="1" max="5000" step="0.01"
+              value="${isQuick ? '' : amount}" placeholder="输入其他金额" autocomplete="off">
+          </div>
+          <p class="field-error" data-error-for="amount"></p>
+        </div>
+
+        <div class="field">
+          <span class="field-label">支付方式</span>
+          <div class="pay-methods">
+            <label class="pay-method">
+              <input type="radio" name="payment" value="wechat" ${initialMethod === 'wechat' ? 'checked' : ''}>
+              <span class="pay-logo wechat" aria-hidden="true">${ICONS.wechat}</span>
+              <span class="pay-method-text">微信支付<small>推荐使用，实时到账</small></span>
+              <span class="pay-radio" aria-hidden="true"></span>
+            </label>
+            <label class="pay-method">
+              <input type="radio" name="payment" value="alipay">
+              <span class="pay-logo alipay" aria-hidden="true">支</span>
+              <span class="pay-method-text">支付宝<small>支持花呗与余额支付</small></span>
+              <span class="pay-radio" aria-hidden="true"></span>
+            </label>
+            <label class="pay-method">
+              <input type="radio" name="payment" value="campus">
+              <span class="pay-logo bank" aria-hidden="true">${ICONS.bank}</span>
+              <span class="pay-method-text">校园卡<small>校园卡余额支付 · 免手续费</small></span>
+              <span class="pay-radio" aria-hidden="true"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="pay-summary">
+          <div class="summary-row"><span>充值金额</span><strong id="summary-amount">${money(amount)}</strong></div>
+          <div class="summary-row"><span>服务费</span><strong>¥0.00</strong></div>
+          <div class="summary-row total"><span>实付金额</span><strong id="summary-total">${money(amount)}</strong></div>
+        </div>
+
+        <div>
+          <button type="submit" class="btn btn-primary btn-block" id="recharge-submit">确认支付 ${money(amount)}</button>
+          <p class="secure-line">${ICONS.shield}校园支付安全加密 · 到账后自动更新寝室余额</p>
+          <p class="payment-agreement">点击支付即表示同意《宿舍水电充值协议》，本页面为校园演示环境，不会产生真实扣款。</p>
+        </div>
+      </form>
+    </div>
+  `;
+
+  showModal(modalShell({
+    kicker: 'Online recharge',
+    title: '宿舍水电充值',
+    subtitle: '充值金额将直接计入所选寝室户号余额。',
+    body,
+    size: 'md'
+  }), { type: 'recharge', accountId: account.id });
+}
+
+function readRechargeAmount(form) {
+  if (!form) return 0;
+  const customInput = form.querySelector('#recharge-custom');
+  const customValue = String(customInput ? customInput.value : '').trim();
+  if (customValue !== '') {
+    const parsed = Number(customValue);
+    return Number.isFinite(parsed) ? round2(parsed) : 0;
+  }
+  const active = form.querySelector('.amount-chip.is-active');
+  return active ? Number(active.dataset.amount) : 0;
+}
+
+function updateRechargeSummary(form = document.getElementById('recharge-form')) {
+  if (!form || !form.isConnected) return;
+  const amount = readRechargeAmount(form);
+  const valid = amount >= 1 && amount <= 5000;
+  const summaryAmount = form.querySelector('#summary-amount');
+  const summaryTotal = form.querySelector('#summary-total');
+  const submit = form.querySelector('#recharge-submit');
+  if (summaryAmount) summaryAmount.textContent = valid ? money(amount) : '—';
+  if (summaryTotal) summaryTotal.textContent = valid ? money(amount) : '—';
+  if (submit) submit.innerHTML = valid ? `确认支付 ${money(amount)}` : '确认支付';
+}
+
+function updateRechargeAccountHint(select) {
+  if (!select) return;
+  const account = getAccount(select.value);
+  const hint = document.getElementById('recharge-balance-hint');
+  if (!account || !hint) return;
+  hint.textContent = `当前余额 ${money(account.balance)}${isLow(account) ? ' · 余额偏低' : ''}`;
+  hint.classList.toggle('is-low', isLow(account));
+}
+
+function genOrderNo() {
+  const date = new Date();
+  const prefix = `QH${date.getFullYear()}${pad2(date.getMonth() + 1)}${pad2(date.getDate())}`;
+  let suffix;
+  do {
+    suffix = String(Math.floor(100000 + Math.random() * 900000));
+  } while (state.orders.some((order) => order.orderNo === prefix + suffix));
+  return prefix + suffix;
+}
+
+function handleRechargeSubmit(form) {
+  const amount = readRechargeAmount(form);
+  const accountId = form.elements.accountId.value;
+  const account = getAccount(accountId);
+  const methodInput = form.querySelector('input[name="payment"]:checked');
+  const method = methodInput ? methodInput.value : 'wechat';
+  setFieldError(form, 'amount', '');
+
+  if (!account) {
+    setFieldError(form, 'amount', '请选择一个有效的充值寝室');
+    return;
+  }
+  if (!Number.isFinite(amount) || amount < 1 || amount > 5000) {
+    setFieldError(form, 'amount', '请输入 ¥1–¥5000 之间的充值金额');
+    const custom = form.querySelector('#recharge-custom');
+    if (custom) custom.focus();
+    return;
+  }
+
+  const submit = form.querySelector('#recharge-submit');
+  setButtonBusy(submit, '正在发起支付…');
+  const epoch = stateEpoch;
+
+  window.setTimeout(() => {
+    if (epoch !== stateEpoch) return;
+    createRechargeOrder({ accountId, amount, method, epoch });
+  }, 620);
+}
+
+function createRechargeOrder({ accountId, amount, method, epoch }) {
+  const order = {
+    orderNo: genOrderNo(),
+    accountId,
+    amount: round2(amount),
+    method,
+    status: 'processing',
+    createdAt: Date.now(),
+    paidAt: null,
+    syncedAt: null,
+    failReason: '',
+    syncing: false
+  };
+  state.orders.unshift(order);
+  state.orderFilter = 'all';
+  renderDashboard();
+  showPaymentModal(order, { focus: true });
+  toast('支付请求已提交，请稍候', 'info', 2400);
+
+  window.setTimeout(() => {
+    if (epoch !== stateEpoch) return;
+    if (order.status !== 'processing') return;
+    order.status = 'pending_sync';
+    order.paidAt = Date.now();
+    renderDashboard();
+    refreshOpenOrderModal(order);
+    toast('支付成功，正在同步到账', 'info', 2600);
+  }, 1250);
+
+  window.setTimeout(() => {
+    if (epoch !== stateEpoch) return;
+    if (order.status !== 'pending_sync') return;
+    completeOrder(order.orderNo, { silent: false });
+  }, 3750);
+}
+
+function paymentOrbit(order) {
+  if (order.status === 'processing') {
+    return '<div class="status-orbit processing" aria-hidden="true"><span class="spinner-ring"></span></div>';
+  }
+  if (order.status === 'pending_sync') {
+    return `<div class="status-orbit pending" aria-hidden="true">${order.syncing ? '<span class="spinner-ring"></span>' : ICONS.sync}</div>`;
+  }
+  if (order.status === 'failed') {
+    return `<div class="status-orbit failed" aria-hidden="true">${ICONS.x}</div>`;
+  }
+  return `<div class="status-orbit success" aria-hidden="true">${ICONS.check}</div>`;
+}
+
+function paymentBodyHTML(order) {
+  const account = getAccount(order.accountId);
+  const accountName = account ? account.alias : '已解绑寝室';
+  let title = '正在安全支付';
+  let description = '正在连接支付通道，请稍候。支付结果会自动更新到订单列表。';
+  if (order.status === 'pending_sync') {
+    title = '支付成功，正在同步';
+    description = '款项已支付，正在写入你的宿舍水电账户，通常 1 分钟内到账。';
+  } else if (order.status === 'success') {
+    title = '充值已到账';
+    description = '充值金额已计入寝室余额，可继续查看订单或完成本次操作。';
+  } else if (order.status === 'failed') {
+    title = '支付未完成';
+    description = order.failReason || '支付没有完成，请重新发起充值。';
+  }
+
+  const successNote = order.status === 'success'
+    ? `<div class="status-note success">${ICONS.check}<span>${money(order.amount)} 已同步至 <strong>${escapeHTML(accountName)}</strong>${account ? `，当前余额 ${money(account.balance)}` : ''}。</span></div>`
+    : order.status === 'pending_sync'
+      ? `<div class="status-note pending">${ICONS.sync}<span>正在同步至宿舍水电账户，到账后余额会自动更新。无需重复支付。</span></div>`
+      : '';
+
+  const actions = order.status === 'processing'
+    ? `<div class="payment-actions"><button type="button" class="btn btn-ghost" data-action="close-modal">返回</button></div>
+       <p class="payment-footnote">你可以关闭该窗口，支付结果会继续在订单列表中更新。</p>`
+    : order.status === 'pending_sync'
+      ? `<div class="payment-actions">
+           <button type="button" class="btn btn-ghost" data-action="view-order" data-order-no="${escapeHTML(order.orderNo)}">查看订单</button>
+           <button type="button" class="btn btn-primary" data-action="close-modal">完成</button>
+         </div>`
+      : `<div class="payment-actions">
+           <button type="button" class="btn btn-ghost" data-action="view-order" data-order-no="${escapeHTML(order.orderNo)}">查看订单</button>
+           <button type="button" class="btn btn-primary" data-action="close-modal">完成</button>
+         </div>`;
+
+  return `
+    <div class="payment-view">
+      ${paymentOrbit(order)}
+      <h2>${title}</h2>
+      <p class="payment-desc">${description}</p>
+      <div class="payment-amount">${money(order.amount)}</div>
+      <div class="payment-receipt">
+        <div class="receipt-row"><span>充值寝室</span><strong>${escapeHTML(accountName)}</strong></div>
+        <div class="receipt-row"><span>支付方式</span><strong>${methodLabel(order.method)}</strong></div>
+        <div class="receipt-row"><span>订单编号</span><strong class="mono">${escapeHTML(order.orderNo)}</strong></div>
+      </div>
+      ${successNote}
+      ${actions}
+    </div>
+  `;
+}
+
+function showPaymentModal(order, { focus = true } = {}) {
+  const content = modalShell({
+    kicker: 'Secure payment',
+    title: '充值支付',
+    subtitle: '',
+    body: `<div class="modal-body" data-payment-order="${escapeHTML(order.orderNo)}">${paymentBodyHTML(order)}</div>`,
+    size: 'sm'
+  });
+  showModal(content, { type: 'payment', orderNo: order.orderNo }, { focus });
+}
+
+function refreshOpenOrderModal(order) {
+  if (!modalOpen) return;
+  if (currentModal && (currentModal.type === 'order' || currentModal.type === 'payment') && currentModal.orderNo === order.orderNo) {
+    const body = currentModal.type === 'payment'
+      ? paymentBodyHTML(order)
+      : orderDetailBodyHTML(order);
+    setModalBody(body, currentModal);
+  }
+}
+
+/* ---------------------------- Order completion / sync ---------------------------- */
+
+function creditOrder(order) {
+  const account = getAccount(order.accountId);
+  if (!account || order.credited) return;
+  account.balance = round2(Number(account.balance) + Number(order.amount));
+  account.lastUpdated = Date.now();
+  order.credited = true;
+  if (!isLow(account)) {
+    if (lastLowAlertAccountId === account.id) hideLowAlert(account.id);
+  }
+}
+
+function completeOrder(orderNo, { silent = false } = {}) {
+  const order = getOrder(orderNo);
+  if (!order || order.status !== 'pending_sync') return;
+  order.status = 'success';
+  order.syncedAt = Date.now();
+  order.syncing = false;
+  creditOrder(order);
+  state.lastSync = Date.now();
+  renderDashboard();
+  refreshOpenOrderModal(order);
+  if (!silent) toast(`充值到账 · ${money(order.amount)}`, 'success');
+}
+
+function syncOrder(orderNo, { silent = false, onDone = null } = {}) {
+  const order = getOrder(orderNo);
+  if (!order || order.status !== 'pending_sync' || order.syncing) {
+    if (typeof onDone === 'function') onDone();
+    return;
+  }
+  order.syncing = true;
+  renderDashboard();
+  refreshOpenOrderModal(order);
+  setNetStatus('loading', '同步中');
+  const epoch = stateEpoch;
+
+  window.setTimeout(() => {
+    if (epoch !== stateEpoch) return;
+    order.syncing = false;
+    completeOrder(orderNo, { silent });
+    setNetStatus('ok', '服务正常');
+    if (typeof onDone === 'function') onDone();
+  }, 1550);
+}
+
+function syncAllPending() {
+  const pending = pendingOrders().filter((order) => !order.syncing);
+  if (!pending.length) {
+    toast('当前没有待同步的订单', 'info');
+    return;
+  }
+  const total = pending.length;
+  let remaining = total;
+  const notify = () => {
+    remaining -= 1;
+    if (remaining === 0) toast(`${total} 笔充值已全部同步到账`, 'success');
+  };
+  pending.forEach((order, index) => {
+    window.setTimeout(() => {
+      syncOrder(order.orderNo, { silent: true, onDone: notify });
+    }, index * 220);
+  });
+}
+
+/* ---------------------------- Order detail ---------------------------- */
+
+function orderDetailBodyHTML(order) {
+  const account = getAccount(order.accountId);
+  const alias = account ? account.alias : '已解绑寝室';
+  const meta = ORDER_META[order.status] || ORDER_META.processing;
+  let title = '订单处理中';
+  let description = '订单状态会自动更新，请稍候。';
+  if (order.status === 'pending_sync') {
+    title = order.syncing ? '正在同步' : '待同步';
+    description = '支付已成功，正在写入宿舍水电账户，通常 1 分钟内到账。';
+  } else if (order.status === 'success') {
+    title = '充值已完成';
+    description = '充值金额已计入寝室余额，感谢你的使用。';
+  } else if (order.status === 'failed') {
+    title = '支付未完成';
+    description = order.failReason || '本次支付没有完成，请重新发起充值。';
+  }
+
+  const createdDone = true;
+  const paymentDone = order.status === 'pending_sync' || order.status === 'success';
+  const paymentActive = order.status === 'processing';
+  const paymentFailed = order.status === 'failed';
+  const syncDone = order.status === 'success';
+  const syncActive = order.status === 'pending_sync';
+
+  const actionButtons = order.status === 'failed'
+    ? `<button type="button" class="btn btn-ghost" data-action="close-modal">关闭</button>
+       <button type="button" class="btn btn-primary" data-action="retry-order" data-order-no="${escapeHTML(order.orderNo)}">重新充值</button>`
+    : order.status === 'pending_sync'
+      ? `<button type="button" class="btn btn-ghost" data-action="close-modal">关闭</button>
+         <button type="button" class="btn btn-primary" data-action="sync-order" data-order-no="${escapeHTML(order.orderNo)}" ${order.syncing ? 'disabled' : ''}>
+           ${order.syncing ? '<span class="btn-spinner" aria-hidden="true"></span>同步中…' : ICONS.sync + '立即同步'}
+         </button>`
+      : order.status === 'success'
+        ? `<button type="button" class="btn btn-ghost" data-action="close-modal">关闭</button>
+           <button type="button" class="btn btn-primary" data-action="recharge-again" data-id="${escapeHTML(order.accountId)}">再次充值</button>`
+        : `<button type="button" class="btn btn-ghost" data-action="close-modal">关闭</button>`;
+
+  return `
+    <div class="order-hero">
+      <div class="status-orbit ${order.status === 'success' ? 'success' : order.status === 'failed' ? 'failed' : order.syncing ? 'processing' : 'pending'} small" aria-hidden="true">
+        ${order.syncing ? '<span class="spinner-ring"></span>' : order.status === 'success' ? ICONS.check : order.status === 'failed' ? ICONS.x : ICONS.sync}
+      </div>
+      <h3>${title}</h3>
+      <p>${description}</p>
+      <div class="detail-amount">${money(order.amount)}</div>
+    </div>
+
+    <div class="order-meta">
+      <div class="meta-row"><span>充值寝室</span><strong>${escapeHTML(alias)}</strong></div>
+      <div class="meta-row"><span>宿舍户号</span><strong>${account ? fullAccountNumber(account.accountNo) : '—'}</strong></div>
+      <div class="meta-row"><span>支付方式</span><strong>${methodLabel(order.method)}</strong></div>
+      <div class="meta-row"><span>创建时间</span><strong>${formatDateTime(order.createdAt)}</strong></div>
+      <div class="meta-row"><span>订单编号</span><strong class="mono">${escapeHTML(order.orderNo)}</strong></div>
+      ${order.status === 'success' ? `<div class="meta-row"><span>到账时间</span><strong>${formatDateTime(order.syncedAt)}</strong></div>` : ''}
+    </div>
+
+    <div class="timeline">
+      <h4>订单进度</h4>
+      <ul class="timeline-list">
+        <li class="timeline-item">
+          <span class="tl-dot done" aria-hidden="true">${ICONS.check}</span>
+          <span class="tl-copy"><strong>创建充值订单</strong><span>${formatDateTime(order.createdAt)}</span></span>
+        </li>
+        <li class="timeline-item">
+          <span class="tl-dot ${paymentFailed ? 'failed' : paymentDone ? 'done' : paymentActive ? 'active' : ''}" aria-hidden="true">
+            ${paymentFailed ? ICONS.x : paymentDone ? ICONS.check : '<span class="spinner-ring"></span>'}
+          </span>
+          <span class="tl-copy">
+            <strong>${paymentFailed ? '支付未完成' : paymentDone ? '支付完成' : '支付确认中'}</strong>
+            <span>${paymentFailed ? '本次支付已关闭' : paymentDone ? formatDateTime(order.paidAt) : '正在等待支付通道确认'}</span>
+          </span>
+        </li>
+        <li class="timeline-item">
+          <span class="tl-dot ${syncDone ? 'done' : syncActive ? 'active' : ''}" aria-hidden="true">
+            ${syncDone ? ICONS.check : syncActive ? '<span class="spinner-ring"></span>' : ICONS.clock}
+          </span>
+          <span class="tl-copy">
+            <strong>${syncDone ? '充值到账' : syncActive ? (order.syncing ? '正在同步到账' : '等待同步到账') : '同步到账'}</strong>
+            <span>${syncDone ? formatDateTime(order.syncedAt) : syncActive ? '款项已支付，正在写入宿舍水电账户' : '支付完成后自动同步'}</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    ${order.status === 'failed' ? `<div class="failure-note">${ICONS.alert}<span>${escapeHTML(order.failReason || '支付未完成，请重新发起充值。')}</span></div>` : ''}
+
+    <div class="order-detail-actions">${actionButtons}</div>
+  `;
+}
+
+function openOrderDetail(orderNo) {
+  const order = getOrder(orderNo);
+  if (!order) {
+    toast('订单不存在或已失效', 'danger');
+    return;
+  }
+  showModal(modalShell({
+    kicker: 'Recharge order',
+    title: '订单详情',
+    subtitle: '',
+    body: `<div class="modal-body">${orderDetailBodyHTML(order)}</div>`,
+    size: 'md'
+  }), { type: 'order', orderNo }, { focus: false });
+}
+
+/* ---------------------------- Bills ---------------------------- */
+
+function billsLoadingHTML() {
+  return `
+    <div class="bill-loading" aria-busy="true" aria-label="正在加载账单">
+      <div class="sk-line" style="width:100%;height:64px;border-radius:12px;margin-bottom:13px"></div>
+      <div class="sk-chart"></div>
+      <div class="sk-rows"></div>
+      <p class="sr-only">正在加载账单，请稍候。</p>
+    </div>
+  `;
+}
+
+function billsErrorHTML(account) {
+  return `
+    <div class="inline-error">
+      <div class="inline-error-icon" aria-hidden="true">${ICONS.cloudOff}</div>
+      <h3>账单暂时获取失败</h3>
+      <p>网络连接不稳定，或账单服务正在维护。请检查网络后重试，余额查询与充值不受影响。</p>
+      <button type="button" class="btn btn-primary" data-action="reload-bills" data-id="${escapeHTML(account.id)}">${ICONS.refresh}重新加载</button>
+      <p class="inline-error-code">ERR_BILL_API · ${formatClock(Date.now())}</p>
+    </div>
+  `;
+}
+
+function billsContentHTML(account) {
+  const meta = TYPE_META[account.type];
+  const bill = account.bills[0];
+  const chronological = [...account.bills].reverse();
+  const maxUsage = Math.max(...account.bills.map((item) => Number(item.usage)), 1);
+  const below = belowThreshold(account);
+  const bars = chronological.map((item, index) => {
+    const percent = Math.max(12, Math.round((Number(item.usage) / maxUsage) * 100));
+    const current = index === chronological.length - 1;
+    return `
+      <div class="bar-col ${current ? 'current' : ''}" title="${item.label}：${item.usage} ${item.unit} · ${money(item.amount)}">
+        <div class="bar-track"><div class="bar-fill" style="height:${percent}%;animation-delay:${index * 55}ms"></div></div>
+        <span class="bar-label">${item.label}</span>
+      </div>
+    `;
+  }).join('');
+
+  const rows = account.bills.map((item) => `
+    <div class="bill-row">
+      <span class="bill-month">${item.label}</span>
+      <span class="bill-desc">${item.usage} ${item.unit} · ${meta.name}账单</span>
+      <span class="bill-amount">${money(item.amount)}</span>
+      <span class="bill-state ${item.status === 'pending' ? 'pending' : ''}">${item.status === 'pending' ? '待缴' : '已缴'}</span>
+    </div>
+  `).join('');
+
+  return `
+    <div class="bill-low-tip">
+      <span>${below ? `余额 ${money(account.balance)} 已低于提醒阈值${account.reminderEnabled === false ? '（提醒已关闭）' : ''}，建议及时充值，避免寝室断水断电。` : `当前余额 ${money(account.balance)}，余额充足。`}</span>
+      <button type="button" data-action="recharge" data-id="${escapeHTML(account.id)}">去充值</button>
+    </div>
+
+    <div class="account-chip" style="margin-bottom:12px">
+      ${utilityIcon(account)}
+      <span class="account-chip-copy">
+        <strong>${escapeHTML(account.alias)}</strong>
+        <small>${escapeHTML(account.provider)} · 户号${maskedAccount(account.accountNo)}</small>
+      </span>
+      <span class="account-chip-balance">${meta.name} · ${meta.unit}</span>
+    </div>
+
+    <div class="bill-summary">
+      <div><span>当前余额</span><strong class="${below ? 'accent' : ''}">${money(account.balance)}</strong></div>
+      <div><span>本月账单</span><strong>${money(bill.amount)}</strong></div>
+      <div><span>本月用量</span><strong>${bill.usage} ${bill.unit}</strong></div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <strong>近 6 个月用量</strong>
+        <span>单位：${meta.unit}</span>
+      </div>
+      <div class="chart-bars" role="img" aria-label="近六个月${meta.name}用量柱状图，当前月${bill.usage}${meta.unit}">${bars}</div>
+    </div>
+
+    <div class="bill-toolbar">
+      <strong>历史账单</strong>
+      <button type="button" class="bill-refresh" data-action="reload-bills" data-id="${escapeHTML(account.id)}">${ICONS.refresh}刷新</button>
+    </div>
+
+    <div class="bill-list">${rows}</div>
+    <p class="bill-footnote">账单数据为模拟展示，实际金额以后勤能源中心结算为准。本期账单将在账期结束后自动结清。</p>
+
+    <div class="bill-actions">
+      <button type="button" class="btn btn-ghost" data-action="close-modal">关闭</button>
+      <button type="button" class="btn btn-primary" data-action="recharge" data-id="${escapeHTML(account.id)}">充值到该寝室</button>
+    </div>
+  `;
+}
+
+function loadBills(account, token, { delay = 620 } = {}) {
+  window.setTimeout(() => {
+    if (token !== billLoadToken) return;
+    if (!modalOpen || !currentModal || currentModal.type !== 'bills' || currentModal.accountId !== account.id) return;
+    if (!navigator.onLine) {
+      setModalBody(billsErrorHTML(account), { type: 'bills', accountId: account.id });
+      return;
+    }
+    setModalBody(billsContentHTML(account), { type: 'bills', accountId: account.id });
+  }, delay);
+}
+
+function openBills(accountId) {
+  const account = getAccount(accountId);
+  if (!account) return;
+  hideLowAlert();
+  const token = ++billLoadToken;
+  showModal(modalShell({
+    kicker: 'Bills & usage',
+    title: '账单明细',
+    subtitle: '寝室余额、用量与历史账单一目了然。',
+    body: `<div class="modal-body">${billsLoadingHTML()}</div>`,
+    size: 'lg'
+  }), { type: 'bills', accountId }, { focus: false });
+  loadBills(account, token);
+}
+
+function reloadBills(accountId) {
+  const account = getAccount(accountId);
+  if (!account) return;
+  const token = ++billLoadToken;
+  setModalBody(billsLoadingHTML(), { type: 'bills', accountId }, { focus: false });
+  loadBills(account, token, { delay: 520 });
+}
+
+/* ---------------------------- Refreshing ---------------------------- */
+
+function refreshAccount(accountId) {
+  const account = getAccount(accountId);
+  if (!account || account.refreshing) return;
+  account.refreshing = true;
+  renderDashboard();
+  setNetStatus('loading', '查询中');
+  const epoch = stateEpoch;
+  window.setTimeout(() => {
+    if (epoch !== stateEpoch) return;
+    account.refreshing = false;
+    account.lastUpdated = Date.now();
+    state.lastSync = Date.now();
+    renderDashboard();
+    setNetStatus('ok', '服务正常');
+    toast('余额已更新', 'success');
+  }, 850);
+}
+
+function refreshAll() {
+  if (state.accounts.some((account) => account.refreshing)) return;
+  state.accounts.forEach((account) => { account.refreshing = true; });
+  renderDashboard();
+  setNetStatus('loading', '同步中');
+  const epoch = stateEpoch;
+  window.setTimeout(() => {
+    if (epoch !== stateEpoch) return;
+    state.accounts.forEach((account) => {
+      account.refreshing = false;
+      account.lastUpdated = Date.now();
+    });
+    state.lastSync = Date.now();
+    renderDashboard();
+    setNetStatus('ok', '服务正常');
+    toast('全部寝室数据已更新', 'success');
+    const button = view.querySelector('[data-action="refresh-all"]');
+    if (button) button.focus({ preventScroll: true });
+  }, 920);
+}
+
+/* ---------------------------- Help & preview ---------------------------- */
+
+function openHelpModal() {
+  const body = `
+    <div class="modal-body">
+      <div class="help-hotline">
+        <span class="help-hotline-icon" aria-hidden="true">${ICONS.help}</span>
+        <span>
+          <strong>校园水电服务台</strong>
+          <small>每日 8:00–22:00 · 后勤服务热线</small>
+        </span>
+        <span class="hotline-number">400-812-6688</span>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary>绑定宿舍户号时提示验证失败怎么办？</summary>
+          <p>请确认户号位数是否正确，并检查费用类型是否选对。你可以在宿舍缴费通知单、后勤公众号或校园卡服务大厅核对户号。</p>
+        </details>
+        <details class="faq-item">
+          <summary>充值后多久可以到账？</summary>
+          <p>支付成功后，订单会进入“待同步”状态，通常 1 分钟内自动同步至宿舍水电账户。若长时间未到账，可在订单详情中点击“立即同步”或联系后勤。</p>
+        </details>
+        <details class="faq-item">
+          <summary>如何调整低余额提醒阈值？</summary>
+          <p>在寝室户号卡片中点击“提醒阈值”旁的编辑按钮，即可调整金额或关闭提醒。余额低于阈值时，页面右下角会弹出充值提醒。</p>
+        </details>
+        <details class="faq-item">
+          <summary>为什么订单显示“待同步”？</summary>
+          <p>待同步表示支付已经成功，但充值结果还在写入宿舍水电账户。页面会自动同步，也可以点击“立即同步”手动触发。</p>
+        </details>
+      </div>
+      <div class="modal-note">${ICONS.shield}校园演示页面不会产生真实扣款，数据刷新后会恢复初始状态。</div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" data-action="close-modal">我知道了</button>
+      </div>
+    </div>
+  `;
+  showModal(modalShell({
+    kicker: 'Help center',
+    title: '帮助中心',
+    subtitle: '常见问题与后勤联系方式。',
+    body,
+    size: 'md'
+  }), { type: 'help' });
+}
+
+function openStatePreview() {
+  const body = `
+    <div class="modal-body">
+      <div class="state-intro">
+        <strong>用于验收的异步状态预览</strong>
+        快速查看加载、失败、待同步等页面状态。所有操作仅影响当前演示环境。
+      </div>
+      <div class="state-grid">
+        <button type="button" class="state-option" data-action="preview-loading">
+          <span class="state-option-icon" aria-hidden="true">${ICONS.refresh}</span>
+          <strong>加载中</strong>
+          <small>展示页面骨架加载状态</small>
+        </button>
+        <button type="button" class="state-option" data-action="preview-error">
+          <span class="state-option-icon" aria-hidden="true">${ICONS.cloudOff}</span>
+          <strong>加载失败</strong>
+          <small>展示网络异常与重试入口</small>
+        </button>
+        <button type="button" class="state-option" data-action="preview-pending">
+          <span class="state-option-icon" aria-hidden="true">${ICONS.sync}</span>
+          <strong>待同步</strong>
+          <small>查看宿舍充值待同步的订单详情</small>
+        </button>
+        <button type="button" class="state-option" data-action="preview-low">
+          <span class="state-option-icon" aria-hidden="true">${ICONS.bell}</span>
+          <strong>低余额提醒</strong>
+          <small>预览余额不足弹出提醒</small>
+        </button>
+      </div>
+      <div class="state-reset"><button type="button" class="state-reset-btn" data-action="reset-demo">重置演示数据</button></div>
+      <p class="preview-footnote">状态预览入口仅用于本项目演示，实际服务中不会出现。</p>
+    </div>
+  `;
+  showModal(modalShell({
+    kicker: 'State preview',
+    title: '界面状态预览',
+    subtitle: '关键异步状态一览。',
+    body,
+    size: 'md'
+  }), { type: 'preview' });
+}
+
+function previewPending() {
+  closeModal();
+  let order = state.orders.find((item) => item.status === 'pending_sync');
+  if (!order && state.accounts.length) {
+    const now = Date.now();
+    order = {
+      orderNo: genOrderNo(),
+      accountId: state.accounts[0].id,
+      amount: 100,
+      method: 'campus',
+      status: 'pending_sync',
+      createdAt: now - 3 * 60 * 1000,
+      paidAt: now - 2 * 60 * 1000,
+      syncedAt: null,
+      failReason: '',
+      syncing: false
+    };
+    state.orders.unshift(order);
+  }
+  if (!order) {
+    toast('请先绑定宿舍户号后再预览订单状态', 'info');
+    return;
+  }
+  state.orderFilter = 'pending';
+  renderDashboard();
+  const section = document.getElementById('orders');
+  if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  window.setTimeout(() => openOrderDetail(order.orderNo), 420);
+}
+
+function previewLow() {
+  closeModal();
+  maybeShowLowAlert({ force: true });
+  if (!lowRoot.querySelector('.low-alert')) {
+    toast('当前所有寝室余额均高于提醒阈值', 'info');
+  }
+}
+
+function resetDemo() {
+  stateEpoch += 1;
+  lowRoot.innerHTML = '';
+  state = createInitialState();
+  dismissedLowAlerts = new Set();
+  lowAlertAutoShown = false;
+  lastLowAlertAccountId = null;
+  closeModal();
+  boot({ delay: 700, showLow: true });
+  toast('演示数据已重置', 'success');
+}
+
+/* ---------------------------- Event handling ---------------------------- */
+
+function handleAction(event) {
+  const target = event.target.closest('[data-action]');
+  if (!target) return;
+  const action = target.dataset.action;
+  if (!action) return;
+
+  switch (action) {
+    case 'scroll-top':
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      break;
+    case 'scroll-orders':
+      event.preventDefault();
+      if (viewState !== 'ready') return;
+      document.getElementById('orders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      break;
+    case 'bind-account':
+      openBindModal();
+      break;
+    case 'close-modal':
+      closeModal();
+      break;
+    case 'dismiss-low':
+      dismissLowAlert(target.dataset.id || lastLowAlertAccountId);
+      break;
+    case 'low-recharge': {
+      const account = getAccount(target.dataset.id);
+      if (!account) break;
+      hideLowAlert(account.id);
+      openRecharge(account.id, suggestedRecharge(account));
+      break;
+    }
+    case 'recharge': {
+      const account = getAccount(target.dataset.id);
+      if (!account) break;
+      openRecharge(account.id, isLow(account) ? suggestedRecharge(account) : 100);
+      break;
+    }
+    case 'recharge-again': {
+      const account = getAccount(target.dataset.id);
+      if (!account) {
+        closeModal();
+        openRecharge(state.accounts[0]?.id || '', 100);
+        break;
+      }
+      openRecharge(account.id, 100);
+      break;
+    }
+    case 'open-bills':
+      openBills(target.dataset.id);
+      break;
+    case 'edit-threshold':
+      openThresholdModal(target.dataset.id);
+      break;
+    case 'refresh-account':
+      refreshAccount(target.dataset.id);
+      break;
+    case 'refresh-all':
+      refreshAll();
+      break;
+    case 'filter-orders':
+      setOrderFilter(target.dataset.filter);
+      break;
+    case 'goto-pending':
+      state.orderFilter = 'pending';
+      renderDashboard();
+      document.getElementById('orders')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      break;
+    case 'sync-all':
+      syncAllPending();
+      break;
+    case 'sync-order':
+      if (target.dataset.orderNo) syncOrder(target.dataset.orderNo);
+      break;
+    case 'open-order':
+      if (target.dataset.orderNo) openOrderDetail(target.dataset.orderNo);
+      break;
+    case 'view-order':
+      if (target.dataset.orderNo) openOrderDetail(target.dataset.orderNo);
+      break;
+    case 'retry-order': {
+      const order = getOrder(target.dataset.orderNo);
+      if (!order) break;
+      closeModal();
+      openRecharge(order.accountId, order.amount);
+      break;
+    }
+    case 'choose-amount': {
+      const form = target.closest('#recharge-form');
+      if (!form) break;
+      form.querySelectorAll('.amount-chip').forEach((chip) => {
+        const active = chip === target;
+        chip.classList.toggle('is-active', active);
+        chip.setAttribute('aria-pressed', String(active));
+      });
+      const custom = form.querySelector('#recharge-custom');
+      if (custom) custom.value = '';
+      setFieldError(form, 'amount', '');
+      updateRechargeSummary(form);
+      break;
+    }
+    case 'reload-bills':
+      reloadBills(target.dataset.id);
+      break;
+    case 'network-info': {
+      if (viewState === 'error') {
+        toast('服务连接异常，请重新加载页面', 'danger');
+      } else {
+        toast(`服务连接正常 · 最近同步 ${relativeTime(state.lastSync)}`, 'info');
+      }
+      break;
+    }
+    case 'open-help':
+      event.preventDefault();
+      openHelpModal();
+      break;
+    case 'open-state-preview':
+      openStatePreview();
+      break;
+    case 'preview-loading':
+      closeModal();
+      boot({ delay: 1800, showLow: false });
+      toast('正在预览加载状态', 'info', 1900);
+      break;
+    case 'preview-error':
+      closeModal();
+      boot({ delay: 850, fail: true, showLow: false });
+      break;
+    case 'preview-pending':
+      previewPending();
+      break;
+    case 'preview-low':
+      previewLow();
+      break;
+    case 'reset-demo':
+      resetDemo();
+      break;
+    case 'retry-boot':
+      boot({ delay: 720, showLow: false });
+      break;
+    default:
+      break;
+  }
+}
+
+function setOrderFilter(filter) {
+  state.orderFilter = filter;
+  document.querySelectorAll('.tab[data-action="filter-orders"]').forEach((tab) => {
+    const active = tab.dataset.filter === filter;
+    tab.classList.toggle('is-active', active);
+    tab.setAttribute('aria-selected', String(active));
+  });
+  const list = document.getElementById('order-list-mount');
+  if (list) list.innerHTML = orderRowsHTML();
+}
+
+function handleSubmit(event) {
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement)) return;
+
+  if (form.id === 'bind-form') {
+    event.preventDefault();
+    handleBindSubmit(form);
+    return;
+  }
+  if (form.id === 'threshold-form') {
+    event.preventDefault();
+    handleThresholdSubmit(form);
+    return;
+  }
+  if (form.id === 'recharge-form') {
+    event.preventDefault();
+    handleRechargeSubmit(form);
+  }
+}
+
+function handleInput(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  if (target.id === 'bind-account-no') {
+    const digits = target.value.replace(/\D/g, '').slice(0, 16);
+    if (target.value !== digits) target.value = digits;
+  }
+
+  const field = target.closest('.field');
+  if (field && field.classList.contains('has-error')) {
+    field.classList.remove('has-error');
+    const error = field.querySelector('.field-error');
+    if (error) error.textContent = '';
+  }
+
+  if (target.id === 'recharge-custom') {
+    const form = target.closest('#recharge-form');
+    if (form && target.value.trim() !== '') {
+      form.querySelectorAll('.amount-chip').forEach((chip) => {
+        chip.classList.remove('is-active');
+        chip.setAttribute('aria-pressed', 'false');
+      });
+    }
+    updateRechargeSummary(form);
+  }
+
+  if (target.id === 'bind-threshold') {
+    target.dataset.touched = 'true';
+  }
+}
+
+function handleChange(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  if (target.name === 'type' && target.closest('#bind-form')) {
+    const form = target.closest('#bind-form');
+    const isWater = target.value === 'water';
+    const threshold = form.querySelector('#bind-threshold');
+    const accountInput = form.querySelector('#bind-account-no');
+    if (threshold && !threshold.dataset.touched) {
+      threshold.value = isWater ? '30' : '50';
+      threshold.dataset.defaultThreshold = isWater ? 'water' : 'electricity';
+    }
+    if (accountInput) {
+      accountInput.placeholder = isWater ? '例如 880021456632' : '例如 320188450971';
+    }
+    setFieldError(form, 'accountNo', '');
+    return;
+  }
+
+  if (target.id === 'recharge-account') {
+    updateRechargeAccountHint(target);
+    return;
+  }
+
+  if (target.id === 'recharge-custom') {
+    updateRechargeSummary(target.closest('#recharge-form'));
+  }
+}
+
+function bindEvents() {
+  document.addEventListener('click', handleAction);
+  document.addEventListener('submit', handleSubmit);
+  document.addEventListener('input', handleInput);
+  document.addEventListener('change', handleChange);
+
+  window.addEventListener('offline', () => {
+    setNetStatus('error', '网络已断开');
+    toast('网络连接已断开，请检查网络后重试', 'danger', 3800);
+  });
+  window.addEventListener('online', () => {
+    setNetStatus('ok', '服务正常');
+    toast('网络连接已恢复', 'success');
+  });
+}
+
+/* ---------------------------- Init ---------------------------- */
+
+bindEvents();
+renderSkeleton();
+boot({ delay: 900, showLow: true });
+</script>
+</body>
+</html>
